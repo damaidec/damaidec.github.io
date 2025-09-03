@@ -37,5 +37,5 @@ Currently doing maldev and making BOF
 
 # Others
 
-* Hackthebox Pro Labs Dante Penetration Tester level 1 - July 2022
-* Hackthebox Pro Labs Offshore Penetration Tester Level 3 - February 2023
+* Hackthebox Pro Labs Dante Penetration Tester level 1
+* Hackthebox Pro Labs Offshore Penetration Tester Level 3
