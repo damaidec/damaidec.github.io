@@ -1,3 +1,3 @@
 BOF
 
-[back to blog]([blog](../blog.md))
+[back to blog](../blog.md)
