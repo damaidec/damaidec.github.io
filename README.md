@@ -8,7 +8,7 @@ Currently doing maldev and making BOF
 
 ![takogif](images/inaaa-ina-galleta.gif)
 
-### Certification
+## Certification
 
 * **Zero-Point Security Ltd Certified Red Team Operator (CRTO)**
 * **Hacktricks Training GCP Red Team Apprentice (GRTA)**
@@ -19,20 +19,20 @@ Currently doing maldev and making BOF
 * **Fortinet Certified Fundamentals in Cybersecurity**
 * **Microsoft Technology Associate: Database Administration Fundamentals (MTA)**
 
-#### todo
+### todo
 * Certified Evasion Techniques Professional (CETP) 
 * Offensive Development Practitioner Certification (ODPC)
 * Advanced Red Team Operations Certification (ARTOC)
 * Red Team Ops II (CRTO2)
 * Certified Red Teamer (CRTeamer)
 
-### CVE
+## CVE
 
 - CVE-2024-24571
 - CVE-2024-24573
 - CVE-2024-24572
 
-### Links
+## Links
 - https://codeshare.frida.re/@damaidec/
 - https://github.com/Pilum-Murialis/tools
 - https://github.com/damaidec
@@ -40,7 +40,7 @@ Currently doing maldev and making BOF
 - https://bugcrowd.com/0xdmd
 - https://medium.com/@damaidec
 
-### Others
+## Others
 
 * Hackthebox Pro Labs Dante Penetration Tester level 1
 * Hackthebox Pro Labs Offshore Penetration Tester Level 3
