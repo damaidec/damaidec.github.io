@@ -26,6 +26,11 @@ Currently doing maldev and making BOF
 * Red Team Ops II (CRTO2)
 * Certified Red Teamer (CRTeamer)
 
+### CVE
+
+- CVE-2024-24571
+- CVE-2024-24573
+- CVE-2024-24572
 
 ### Links
 - https://codeshare.frida.re/@damaidec/
