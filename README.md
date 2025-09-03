@@ -34,3 +34,8 @@ Currently doing maldev and making BOF
 - https://hackerone.com/cdmd?type=user
 - https://bugcrowd.com/0xdmd
 - https://medium.com/@damaidec
+
+# Others
+
+* Hackthebox Pro Labs Dante Penetration Tester level 1 - July 2022
+* Hackthebox Pro Labs Offshore Penetration Tester Level 3 - February 2023
