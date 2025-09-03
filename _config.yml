@@ -6,7 +6,3 @@ title: 'www.zakodachi.dev'
 description: "my notes"
 baseurl: "/"
 url: "https://www.zakodachi.dev"
-
-header_pages:
-  - README.md
-  - blog.md
