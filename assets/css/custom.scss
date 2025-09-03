@@ -1,0 +1,29 @@
+---
+
+---
+
+@import "just-the-docs";
+
+/* Dark mode override */
+body {
+  background-color: #0d1117;
+  color: #c9d1d9;
+}
+
+a {
+  color: #58a6ff;
+}
+
+.side-bar,
+.site-header,
+.page-header {
+  background-color: #161b22;
+}
+
+.site-nav .nav-list .nav-list-item .nav-list-link {
+  color: #c9d1d9;
+}
+
+.site-nav .nav-list .nav-list-item .nav-list-link:hover {
+  color: #58a6ff;
+}
