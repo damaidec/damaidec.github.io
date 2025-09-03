@@ -35,7 +35,7 @@ Currently doing maldev and making BOF
 - https://bugcrowd.com/0xdmd
 - https://medium.com/@damaidec
 
-# Others
+### Others
 
 * Hackthebox Pro Labs Dante Penetration Tester level 1
 * Hackthebox Pro Labs Offshore Penetration Tester Level 3
