@@ -1,6 +1,6 @@
 ## About Me
 
-A pentester and redteamer. Mostly do Web, API, External/Internal infrastructure, Active directory and android pentesting. At free time just simply coding, studying, doing CTF, reading manga, watching anime. Sometimes doing lab challenges for internal training, Active Directory, vuln machines and etc. 
+A pentester and redteamer. Mostly do Web, API, External/Internal infrastructure, Active directory and android pentesting. At free time just simply coding, studying, doing CTF, reading manga, watching anime. Sometimes I create lab challenges for internal training, Active Directory, vuln machines and etc. 
 
 Currently doing maldev and making BOF
 
