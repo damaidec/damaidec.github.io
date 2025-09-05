@@ -1,0 +1,1 @@
+[back to blog](../blog.md)
