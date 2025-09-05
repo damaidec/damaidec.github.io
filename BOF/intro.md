@@ -20,27 +20,27 @@ more information at [cobalt strike user guides](https://hstechdocs.helpsystems.c
 The blog will focus on making a havoc BOF. For the first BOF it will be focused on the passing arguments and aggressor script (not sure what it's called on havoc but on Cobalt strike it's called like that so lets just call it the same lol). 
 
 Before we start my lab setup is like this.
-- Windows dev box
-- kali linux
-- Target machine (optional) 
+* Windows dev box
+* kali linux
+* Target machine (optional) 
 
 On my windows dev box I have all my programming stuff related in here and debugging tools. The tools I had are:
-- Visual studio with C installed
-- python3
-- x64dbg
-- process hacker
-- bof-vs (optional) [bof-vs](https://github.com/Cobalt-Strike/bof-vs)
-- Turn off the AV for now.
+* Visual studio with C installed
+* python3
+* x64dbg
+* process hacker
+* bof-vs (optional) [bof-vs](https://github.com/Cobalt-Strike/bof-vs)
+* Turn off the AV for now.
 
 There are other tools but those are what I ussually use on my windows dev box.
 
 On my Kali
-- havoc c2 server and client
-- havoc profile generator (optional) [profile-generator](https://github.com/Ghost53574/havoc_profile_generator)
-- python
-- gcc-mingw-w64-x86-64 (for cross compiling)
-- loader (optional)
-- beacon.h [beacon.h](https://github.com/Cobalt-Strike/bof_template/blob/main/beacon.h)
+* havoc c2 server and client
+* havoc profile generator (optional) [profile-generator](https://github.com/Ghost53574/havoc_profile_generator)
+* python
+* gcc-mingw-w64-x86-64 (for cross compiling)
+* loader (optional)
+* beacon.h [beacon.h](https://github.com/Cobalt-Strike/bof_template/blob/main/beacon.h)
 
 ## Creating first BOF
 
