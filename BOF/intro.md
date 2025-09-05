@@ -17,14 +17,14 @@ more information at [cobalt strike user guides](https://hstechdocs.helpsystems.c
 
 ## Environment
 
-The blog will focus on making a havoc BOF. For the first BOF it will be focused on the passing arguments and aggressor script (not sure what it's called on havoc but on Cobalt strike it's called like that so lets just call it the same lol). 
+The blog will focus on making a havoc BOF. The first BOF will be focused on passing arguments and aggressor script (not sure what it's called on havoc but on Cobalt strike it's called like that so lets just call it the same lol). 
 
-Before we start my lab setup is like this.
+My lab setup.
 * Windows dev box
 * kali linux
 * Target machine (optional) 
 
-On my windows dev box I have all my programming stuff related in here and debugging tools. The tools I had are:
+On my windows dev box, I have all my programming stuff and debugging tools. The tools I had are:
 * Visual studio with C installed
 * python3
 * x64dbg
@@ -32,7 +32,7 @@ On my windows dev box I have all my programming stuff related in here and debugg
 * bof-vs (optional) [bof-vs](https://github.com/Cobalt-Strike/bof-vs)
 * Turn off the AV for now.
 
-There are other tools but those are what I ussually use on my windows dev box.
+There are other tools but, those are what I ussually use on my windows dev box.
 
 On my Kali
 * havoc c2 server and client
@@ -44,14 +44,15 @@ On my Kali
 
 ## Creating first BOF
 
-I actually got used compiling my BOF on my kali since it saves me sometime transferring the object file. But it's up to you whether you want to do it on windows or kali, but I will recommend trying to use bof-vs since it also had boflint [boflint](https://www.outflank.nl/blog/2025/06/30/bof-linting-for-accelerated-development/)
+I actually got used compiling my BOF on my kali since it saves me time transferring the object file. But it's up to you whether you want to do it on windows or kali, but I will recommend trying to use bof-vs since it also had boflint [boflint](https://www.outflank.nl/blog/2025/06/30/bof-linting-for-accelerated-development/)
 
-Below is the starting template for our BOF. As observe instead of void "main" we used go. In BOF the void go is the main function and the entry point. When writing a BOF, beacon.h is required. This header file replaces normal C functions (like printf) with Beacon’s own functions, allowing your code to run inside a C2 agent.
+Below is the starting template for our BOF. As observe instead of "void main" we used "void go". In BOF the void go is the main function and the entry point. When writing a BOF, beacon.h is required. This header file replaces normal C functions (like printf) with Beacon’s own functions, allowing your code to run inside a C2 beacon/agent/demon.
 
 ```c
 #include <windows.h>
 #include "beacon.h" 
 
+//main function
 void go(char* args, int argc){
     
     datap parser;
@@ -63,7 +64,7 @@ void go(char* args, int argc){
     Strinput = BeaconDataExtract(&parser, NULL);
     Intinput  = BeaconDataInt(&parser);
 
-    //prints hello world
+    //hello world
     BeaconPrintf(CALLBACK_OUTPUT, "hello world");
 
     //prints out message to demon console
@@ -71,24 +72,26 @@ void go(char* args, int argc){
 }
 ```
 
-to compile, run the command below.
+to compile the BOF, run the command below. Note I am using my kali here when I am compiling.
 
 ```bash
 x86_64-w64-mingw32-gcc -c src/test.c -w -o bin/test.o
 ```
 
-## Aggressor script
-
-Next is we need to build the aggressor script. You can test your newly created beacon by using inline-execute.
+You can test your newly created beacon by using inline-execute. To use this get a callback or execute the payload on your dev box. Then interact with the session and run the command shown below.
 
 ![alt text](img/image.png "Exucting BOF via inline-execute")
+
+## Aggressor script
+
+Next is we need to build the aggressor script. The aggressor script is loaded in the C2. This is used for registering a new command to our C2 allowing the operator to extends the C2 capability. [aggressor script](https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/topics_aggressor-scripts/agressor_script.htm)
 
 Below is the template for our havoc aggressor script.
 
 ```py
 from havoc import Demon, RegisterCommand, RegisterModule
 
-def run_firstbof(demon_id, *args):
+def run_firstbof(demon_id, *args): #function
     
     task_id: str = None
     demon: Demon = None
@@ -108,13 +111,16 @@ def run_firstbof(demon_id, *args):
 
     return task_id
 
-#I maybe wrong on the naming but here is how I understand it.
+#I maybe wrong on the naming, but here is how I understand it.
+
 #RegisterCommand(pyfunction, "<modulename>", "command name", "description can be seen via help <modulename>", <not sure>, "shows an example usage command can be seen via help <modulename> <command name>", "example command to execute just the args ")
 RegisterModule( "testbof", "Your first bof description", "", "", "", ""  )
 RegisterCommand(run_firstbof, "testbof", "firstbof", "Description goes here", 0, "usage: ", "test 123")
 ```
 
-to load the script click Scripts (will open script manager) > Load script > and load the python script. On my havoc c2 there is a bug wherein if you try to load a script sometimes it can't be seen even if you refresh it on the script manager so I had to re open the client or the server.
+to load the script, click "**Scripts**" (will open script manager) > **Load** **script** > and then **load the python script**. On my havoc c2 there is a bug wherein if you try to load a script sometimes it can't be seen even if you refresh it on the script manager so I had to re open the client or the server.
+
+Below screenshot shows our new command on havoc.
 
 ![alt text](img/image2.png "Aggressor script loaded")
 
