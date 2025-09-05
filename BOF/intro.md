@@ -46,11 +46,11 @@ On my Kali
 
 I actually got used compiling my BOF on my kali since it saves me sometime transferring the object file. But it's up to you whether you want to do it on windows or kali, but I will recommend trying to use bof-vs since it also had boflint [boflint](https://www.outflank.nl/blog/2025/06/30/bof-linting-for-accelerated-development/)
 
-Below is the starting template for our BOF. As observe instead of void "main" we used go. In BOF the void go is the main function and the entry point.
+Below is the starting template for our BOF. As observe instead of void "main" we used go. In BOF the void go is the main function and the entry point. When writing a BOF, beacon.h is required. This header file replaces normal C functions (like printf) with Beacon’s own functions, allowing your code to run inside a C2 agent.
 
 ```c
 #include <windows.h>
-#include "beacon.h"
+#include "beacon.h" 
 
 void go(char* args, int argc){
     
@@ -71,7 +71,7 @@ void go(char* args, int argc){
 }
 ```
 
-to compile run the command below.
+to compile, run the command below.
 
 ```bash
 x86_64-w64-mingw32-gcc -c src/test.c -w -o bin/test.o
