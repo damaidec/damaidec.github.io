@@ -79,7 +79,7 @@ x86_64-w64-mingw32-gcc -c src/test.c -w -o bin/test.o
 
 ## Aggressor script
 
-Next that we need to build is the aggressor script. You can test your newly created beacon by using inline-execute.
+Next is we need to build is the aggressor script. You can test your newly created beacon by using inline-execute.
 
 ![alt text](img/image.png "Exucting BOF via inline-execute")
 
