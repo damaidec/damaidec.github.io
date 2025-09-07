@@ -163,6 +163,7 @@ To check what happens on sleep, use process hacker, check the target process and
 ![alt text](img/image22.png)
 
 The screenshot below shows when it's not on sleep. As observe it's using winHTTP library for the communication.
+
 ![alt text](img/image5.png)
 
 If you are trying to perform a process injection on a process owned by other user or a process owned by NT authority and you dont have enough privilege. This wont be possible because of access control restrictions. But if you enable SeDebugPrivilege you will be able to injec.
