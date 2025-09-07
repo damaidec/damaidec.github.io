@@ -166,7 +166,7 @@ The screenshot below shows when it's not on sleep. As observe it's using winHTTP
 
 ![alt text](img/image5.png)
 
-If you are trying to perform a process injection on a process owned by other user or a process owned by NT authority and you dont have enough privilege. This wont be possible because of access control restrictions. But if you enable SeDebugPrivilege you will be able to injec.
+If you are trying to perform a process injection on a process owned by other user or a process owned by NT authority and you dont have enough privilege. This wont be possible because of access control restrictions. But if you enable SeDebugPrivilege you will be able to inject and gain the token permission level of the target process resulting into privilege escalation.
 ![alt text](img/image-3.png)
 
 
