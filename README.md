@@ -24,12 +24,18 @@ See my blog below, just created this for my notes, planning to move also my othe
 * **Fortinet Certified Fundamentals in Cybersecurity**
 * **Microsoft Technology Associate: Database Administration Fundamentals (MTA)**
 
+## Others
+
+* Hackthebox Pro Labs Dante Penetration Tester level 1
+* Hackthebox Pro Labs Offshore Penetration Tester Level 3
+
 ### todo
 * Certified Evasion Techniques Professional (CETP) 
 * Offensive Development Practitioner Certification (ODPC)
 * Advanced Red Team Operations Certification (ARTOC)
 * Red Team Ops II (CRTO2)
 * Certified Red Teamer (CRTeamer)
+* Prolabs APTSlabs and cybernetics
 
 ## CVE
 
@@ -45,7 +51,3 @@ See my blog below, just created this for my notes, planning to move also my othe
 - https://bugcrowd.com/0xdmd
 - https://medium.com/@damaidec
 
-## Others
-
-* Hackthebox Pro Labs Dante Penetration Tester level 1
-* Hackthebox Pro Labs Offshore Penetration Tester Level 3
