@@ -10,6 +10,10 @@
 
 ### Evading EDR
 
+=======================================
+
+## My Notes
+
 ### OSCP notes
 
 ### CRTO notes
