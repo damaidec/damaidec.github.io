@@ -6,7 +6,9 @@
 
 ### Command and Control 
 
-### Evading windows defender
+### Evading AV
+
+### Evading EDR
 
 ### OSCP notes
 
@@ -22,3 +24,6 @@
 
 ### CETP notes
 
+### CAWASP notes
+
+### Android pentesting notes
