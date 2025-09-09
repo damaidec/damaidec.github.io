@@ -1,3 +1,5 @@
+[back to blog](../blog.md)
+
 # Linux
 
 ```
@@ -182,3 +184,5 @@ Get-EventLog -LogName System
 Script Block Logging
 Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-PowerShell/Operational'; Id=4104} | Select-Object -ExpandProperty Message
 ```
+
+[back to blog](../blog.md)

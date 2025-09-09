@@ -16,6 +16,10 @@
 
 ### OSCP notes
 
+- [privesc](OSCPnotes/Privesc.md)
+- [AD](OSCPnotes/AD.md)
+- [privesc](OSCPnotes/others.md)
+
 ### CRTO notes
 
 ### CRTO2 notes

@@ -1,3 +1,5 @@
+[back to blog](../blog.md)
+
 # others
 
 ```
@@ -234,3 +236,5 @@ type config.Library-ms
 </searchConnectorDescriptionList>
 </libraryDescription>
 ```
+
+[back to blog](../blog.md)
