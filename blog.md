@@ -32,6 +32,4 @@
 
 ### CETP notes
 
-### CAWASP notes
-
 ### Android pentesting notes
