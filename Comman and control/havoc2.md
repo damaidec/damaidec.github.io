@@ -6,8 +6,15 @@
 The post will focus on Havoc C2.
 
 * [Getting started](#havoc-installation)
+  * [Teamserver](#team-server)
+  * [client](#client)
 * [Profile configuration](#profile-configuration)
-* Payload generation
+  * [base profile](#base-profile)
+  * [Demon block](#demon-block)
+    * [Injection](#injection)
+    * [Replace strings](#replace-strings)
+    * [sleep and jitter](#sleep-and-jitter)
+  * [Listeners block](#listeners-block)
 * Agent
 * [BOF](../BOF/intro.md)
 * Infrastructure setup
@@ -85,6 +92,8 @@ cd havoc_profile_generator
 pip3 install -r requirements.txt
 ```
 
+## Base profile
+
 ```bash
 python3 havoc_profile_generator.py -h
 usage: Havoc profile generator [-h] [-c CONFIG] [-r READ] [-l [LIST]] [-s [SYSNATIVE]] [-a ARCH] [-p PROFILE] [-H HOST] [-S HOSTS] [-P PORT] [-L LISTENERS] [-E [EVASION]] [-M MPORTS] [-o OUTFILE] [-q [QUIET]]
@@ -133,8 +142,101 @@ havoc server --profile profiles/test.profile --debug
 ```
 ![alt text](img/image3.png)
 
+For the meantime generate a payload and ensure that everything works fine. If you receive an error **"[-] Injection Spawn64 is undefined"** ensure that the profile demon block have an injection point or you can add the spawn path when you generate the payload
+
+demon block, note that you must specify which process you need to inject into, inorder to blend into the network. As for example if you choose notepad and calc as injection **are these processes should be making a HTTP/HTTPS request ?**, if not choose a proper process that makes a HTTP/HTTPS request such as edge, chrome or other processes.
+
+## Demon block
+
+### Injection
+
+As shown for the code block below, I used werfault. It makes HTTP/HTTPS requests to Microsoft for error reporting. [werfault microsoft](https://learn.microsoft.com/en-us/answers/questions/2790832/how-to-repair-c-windowssystem32werfault-exe).
+
+The spawn is used for post exploitation modules and injects into either x64 or x86 architecture.
+
+```python
+Demon {
+    Sleep  = 47
+    Jitter = 62
+    
+    Injection {
+     Spawn64 = "C:\\Windows\\System32\\werfault.exe"
+     Spawn32 = "C:\\Windows\\SysWOW64\\werfault.exe"
+    }
+}
+```
+
+Generate a test payload and ensure that it compiles the exe.
+
+![alt text](img/image4.png)
+
+For the next example I will be using dll payload, because for some reason the generated exe does not contains demon.x64.exe when you run strings on that. 
+
+### Replace strings
+
+As shown from the screenshot below when you run strings on demon.x64.dll it will show the following.
+
+* demon.x64.dll
+* Dllmain
+* Start
+
+This payload could be easily detected by an AV and blue teamers when they check the strings. Another thing to note here to fully evade the static detection of the AV you must also modify the source code of how it generates the payload.
+
+![alt text](img/image5.png)
+
+To remove the strings you can use the following on the profile. The ReplaceStrings-x64 could be use to replace strings into something or just make it blank. The blog from WKL https://whiteknightlabs.com/2023/05/23/unleashing-the-unseen-harnessing-the-power-of-cobalt-strike-profiles-for-edr-evasion/ shows a handful of **strrep** that we could use. We can copy a few of them in our profile and convert it into ReplaceStrings-x64.
+
+Below is just an example of replacing strings and if you want to add more feel free to do, I suggest that add everything that could give some detection.
+
+
+
+```python
+Injection {
+     Spawn64 = "C:\\Windows\\System32\\werfault.exe"
+     Spawn32 = "C:\\Windows\\SysWOW64\\werfault.exe"
+    }
+
+    Binary {
+        ReplaceStrings-x64 = {
+            "demon.x64.dll": "",
+            "demon.x64.exe": "",
+            "DllMain":"",
+            "Start":"",
+            "demon": "",
+            ".x64.dll": "",
+            "This program cannot be run in DOS mode.": "",
+        }
+
+        ReplaceStrings-x86 = {
+            "demon.x86.dll": "",
+            "demon.x86.exe": "",
+            "demon": "",
+            "This program cannot be run in DOS mode.": "",
+        }
+    }
+```
+
+Save the new profile and rerun the server. Generate the payload and run strings again, we can see that theres a difference and it removes what we want to. I highly suggest to add more replace strings similar on the blog of whiteknightlabs to have more a bit of stealthiness. 
+
+![alt text](img/image2.png)
+
+Generate a new payload, execute it on a windows test server and ensure that it still works whenever you do something in the profile.
+
+### sleep and jitter
+If you have notice we have sleep and jitter on the profile when we generate it. [havoc profile documentation](https://havocframework.com/docs/profiles)
+
+| Field | Description 
+| -------- | -------- 
+| Sleep | The baseline time that the agent/implant waits between contacting the C2 server. For example if sleep is set to 60, the Demon will check in every 60 seconds.
+| Jitter | A randomization percentage applied to the sleep interval, to avoid predictable agent/implant patterns. When the sleep is set to 60 and the jitter to 20, the actual check in interval will randomly vary between 48 and 72 seconds (20%), making it harder for defenders to fingerprint fixed agent/implant intervals.
+
+
+## Listeners block
+
+###
+
 ## Interacting with Agent
 
-![https://tenor.com/view/silksong-hollow-knight-hollow-night-silksong-faridulasimanet-sherma-silksong-gif-171830693794769624](img/silksong-hollow-knight.gif)
+![https://tenor.com/view/silksong-hollow-knight-hollow-night-silksong-faridulasimanet-sherma-silksong-gif-171830693794769624](../images/silksong-hollow-knight.gif)
 
 [back to blog](../blog.md)
