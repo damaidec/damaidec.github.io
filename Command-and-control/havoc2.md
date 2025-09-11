@@ -15,15 +15,17 @@ The post will focus on Havoc C2.
     * [Replace strings](#replace-strings)
     * [sleep and jitter](#sleep-and-jitter)
   * [Listeners block](#listeners-block)
+  * [Teamserver block](#teamserver-block)
+  * [Operators block](#operators-block)
 * Agent
-* [BOF](../BOF/intro.md)
+* [Beacon Object Files](../BOF/intro.md)
 * [Infra setup](Infrastructure-setup.md)
 
 ## Havoc installation
 
 Follow the installation on the official wiki. [Havoc wiki installation](https://havocframework.com/docs/installation).
 
-Or in kali you can use apt install havoc. The only caveat in using this is, it's using an old version [Havoc repo kali](https://www.kali.org/tools/havoc/). `version: 0.6~git20240910.69ce17c arch: amd64`
+Or in kali you can use apt install havoc. [Havoc repo kali](https://www.kali.org/tools/havoc/). `version: 0.6~git20240910.69ce17c arch: amd64`
 
 ```bash
 kali> havoc                                                      
@@ -152,10 +154,10 @@ As shown for the code block below, I used werfault. It makes HTTP/HTTPS requests
 
 The spawn is used for post exploitation modules and injects into either x64 or x86 architecture.
 
-```python
+```json
 Demon {
-    Sleep  = 47
-    Jitter = 62
+    Sleep  = 47 //47 seconds for checkin
+    Jitter = 62 //A randomization percentage applied to the sleep interval
     
     Injection {
      Spawn64 = "C:\\Windows\\System32\\werfault.exe"
@@ -188,12 +190,13 @@ Below is just an example of replacing strings and if you want to add more feel f
 
 
 
-```python
+```json
+//injection block for post exploitation.
 Injection {
      Spawn64 = "C:\\Windows\\System32\\werfault.exe"
      Spawn32 = "C:\\Windows\\SysWOW64\\werfault.exe"
     }
-
+//payload generated block currently it only supports ReplaceStrings-x64 to remove some sigs such as demon.x64.exe
     Binary {
         ReplaceStrings-x64 = {
             "demon.x64.dll": "",
@@ -231,7 +234,89 @@ If you have notice we have sleep and jitter on the profile when we generate it. 
 
 ## Listeners block
 
-###
+The generated profile, gives the Listener block below
+
+### 
+
+```json
+Listeners {
+    Http {
+        Name         = "Agent Listener - HTTP"
+        KillDate     = "2026-03-28 08:14:20"
+        WorkingHours = "0:00-23:59"
+        Hosts        =  ["192.168.56.101"]
+        HostBind     = "0.0.0.0"
+        HostRotation = "round-robin"
+        PortBind     =  80
+        Secure       =  false
+        UserAgent    = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
+        Uris         =  ["/owa/", "/OWA/"]
+        Headers      =  ["Host: www.outlook.live.com", "Accept: */*", "Cookie: MicrosoftApplicationsTelemetryDeviceId=95c18d8-4dce9854;ClientId=1C0F6C5D910F9;MSPAuth=3EkAjDKjI;xid=730bf7;wla42=ZG0yMzA2KjEs"]
+
+        Response {
+            Headers  = ["Cache-Control: no-cache", "Pragma: no-cache", "Content-Type: text/html; charset=utf-8", "Server: Microsoft-IIS/10.0", "request-id: 6cfcf35d-0680-4853-98c4-b16723708fc9", "X-CalculatedBETarget: BY2PR06MB549.namprd06.prod.outlook.com", "X-Content-Type-Options: nosniff", "X-OWA-Version: 15.1.1240.20", "X-OWA-OWSVersion: V2017_06_15", "X-OWA-MinimumSupportedOWSVersion: V2_6", "X-Frame-Options: SAMEORIGIN", "X-DiagInfo: BY2PR06MB549", "X-UA-Compatible: IE=EmulateIE7", "X-Powered-By: ASP.NET", "X-FEServer: CY4PR02CA0010", "Connection: close"]
+        }
+    }
+
+    Http {
+        Name         = "Agent Listener - HTTP/s"
+        KillDate     = "2026-07-07 13:41:49"
+        WorkingHours = "0:00-23:59"
+        Hosts        =  ["192.168.56.101"]
+        HostBind     = "0.0.0.0"
+        HostRotation = "round-robin"
+        PortBind     =  443
+        Secure       =  true
+        UserAgent    = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
+        Uris         =  ["/owa/", "/OWA/"]
+        Headers      =  ["Host: www.outlook.live.com", "Accept: */*", "Cookie: MicrosoftApplicationsTelemetryDeviceId=95c18d8-4dce9854;ClientId=1C0F6C5D910F9;MSPAuth=3EkAjDKjI;xid=730bf7;wla42=ZG0yMzA2KjEs"]
+
+        Response {
+            Headers  = ["Cache-Control: no-cache", "Pragma: no-cache", "Content-Type: text/html; charset=utf-8", "Server: Microsoft-IIS/10.0", "request-id: 6cfcf35d-0680-4853-98c4-b16723708fc9", "X-CalculatedBETarget: BY2PR06MB549.namprd06.prod.outlook.com", "X-Content-Type-Options: nosniff", "X-OWA-Version: 15.1.1240.20", "X-OWA-OWSVersion: V2017_06_15", "X-OWA-MinimumSupportedOWSVersion: V2_6", "X-Frame-Options: SAMEORIGIN", "X-DiagInfo: BY2PR06MB549", "X-UA-Compatible: IE=EmulateIE7", "X-Powered-By: ASP.NET", "X-FEServer: CY4PR02CA0010", "Connection: close"]
+        }
+    }
+
+    Smb {
+        Name         = "Pivot - Smb"
+        PipeName     = "gecko.8410.5458.476275831687329289"
+    }
+}
+```
+
+## Teamserver block
+
+The teamserver block is pretty much self explanatory here is where the teamserver starts and listen and it's highly recommended to use different port and start the server locally. The build block is used for compiling C and assembly payload.
+
+```json
+//teamserver config where it runs
+Teamserver {
+    Host = "127.0.0.1"
+    Port = "29229"
+    //payload compiler
+    Build {
+        Compiler64 = "/usr/bin/x86_64-w64-mingw32-gcc"
+        Compiler86 = "/usr/bin/i686-w64-mingw32-gcc"
+        Nasm = "/usr/bin/nasm"
+    }
+}
+```
+
+## Operators block
+
+The operator block is where you specify the authentication to teamserver for each operator. As usualy the password should be strong as well.
+
+```json
+//users
+Operators {
+    user "christinadeleon" {
+        Password = "<REDACTED>"
+    }
+
+    user "neo" {
+        Password = "<REDACTED>>"
+    }
+}
+```
 
 ## Interacting with Agent
 
