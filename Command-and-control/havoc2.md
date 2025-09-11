@@ -17,9 +17,7 @@ The post will focus on Havoc C2.
   * [Listeners block](#listeners-block)
 * Agent
 * [BOF](../BOF/intro.md)
-* Infrastructure setup
-  * VPN
-  * [Redirector](redirector.md)
+* [Infra setup](Infrastructure-setup.md)
 
 ## Havoc installation
 
