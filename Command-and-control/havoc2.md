@@ -154,7 +154,7 @@ As shown for the code block below, I used werfault. It makes HTTP/HTTPS requests
 
 The spawn is used for post exploitation modules and injects into either x64 or x86 architecture.
 
-```json
+```bash
 Demon {
     Sleep  = 47 //47 seconds for checkin
     Jitter = 62 //A randomization percentage applied to the sleep interval
@@ -190,7 +190,7 @@ Below is just an example of replacing strings and if you want to add more feel f
 
 
 
-```json
+```bash
 //injection block for post exploitation.
 Injection {
      Spawn64 = "C:\\Windows\\System32\\werfault.exe"
@@ -238,7 +238,7 @@ The generated profile, gives the Listener block below
 
 ### 
 
-```json
+```bash
 Listeners {
     Http {
         Name         = "Agent Listener - HTTP"
@@ -287,7 +287,7 @@ Listeners {
 
 The teamserver block is pretty much self explanatory here is where the teamserver starts and listen and it's highly recommended to use different port and start the server locally. The build block is used for compiling C and assembly payload.
 
-```json
+```bash
 //teamserver config where it runs
 Teamserver {
     Host = "127.0.0.1"
@@ -305,7 +305,7 @@ Teamserver {
 
 The operator block is where you specify the authentication to teamserver for each operator. As usualy the password should be strong as well.
 
-```json
+```bash
 //users
 Operators {
     user "christinadeleon" {
