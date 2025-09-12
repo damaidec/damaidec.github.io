@@ -58,24 +58,24 @@ Flags:
 Use "havoc [command] --help" for more information about a command.
 ```
 
-The team server is the core part in all C2, this is where you generate your payload, set up listeners, interacts with agents and etc.
+The team server is the core component of any C2 it’s where you generate payloads, set up listeners, interact with agents, and more. See the Havoc documentation for details:
 [Team server](https://havocframework.com/docs/teamserver)
 
-Ideally the team server should be located/placed locally and should not expose any port in the internet/publicly. This helps ensuring that the C2 server is safe from threat actors, BOTS and etc. Another considerisation should be noted is that the server where you install the C2 teamserver should be fully patched, follows best practice and security hygiene just to ensure the it is hardened.
+Ideally, the team server should be hosted locally and must not expose any ports to the public Internet. This reduces the risk from threat actors, automated scanners, and opportunistic bots. The host running the team server should be fully patched and follow security best practices and hardening guidelines.
 
-(Optional) As for experiment you could try getting a VPS, use virustotal to check the IP and observe. Then install metasploit or any C2 and then create a listener. Wait for a few days and observe that the IP reputation of the IP/domain would be malicious, bots are also trying to connect on the exposed port and exploiting it.
+(Optional) If you want to observe the risks firsthand get a VPS, check its IP on VirusTotal and observe that it might be clean (assuming that the previous owner did not do anything malicious), install Metasploit or another C2, create a listener, then leave it exposed for a few days. You’ll likely see the IP’s reputation degrade, and automated bots and scanners attempting to connect to or exploit the exposed service.
 
 ## Client
 
-The havoc client is used for connecting into the C2 server. Each operator can connect to the server as long as it reach the connection port for the C2. The client also provide a GUI for the operator to interact with the C2 functionalities. [Havoc client](https://havocframework.com/docs/client)
+The Havoc client is used to connect to the C2 server. Each operator can connect to the server. The client also provides a GUI for operators to interact with the C2 functionalities. [Havoc client](https://havocframework.com/docs/client)
 
 ![alt text](img/image.png)
 
 ## Profile configuration
 
-Creating profile is one of the most important thing in C2, this allows the operator to have malleability in C2, allowing them to customize the user agent, headers and etc. to blend in the network, set the behavious of the payload like where it injects, set the section to RWX false, remove strings and many more. [havoc profile](https://havocframework.com/docs/profiles)
+Creating a profile is one of the most important tasks in C2. It gives the operator the flexibility to customize the user agent, headers, and other attributes to blend into the network, you could also configure the payload behavior (for example, where it injects), remove strings, and other modifications. [havoc profile](https://havocframework.com/docs/profiles)
 
-Unfortunately in havoc c2 (community), just adding the community word here because there is an upcoming havoc pro and it's not released yet as the time of writing. So going back, in havoc c2 only offers a couple of modification you could do on the payload and other functionalities unlike in cobalt strike you have a wide range of stuffs you could use such as
+Unfortunately in havoc c2 (community), just adding the community word here because there is an upcoming **havoc pro** and it's not released yet as the time of writing. So going back, in havoc it only offers a couple of modification you could do on the payload and on it's other functionalities unlike in cobalt strike you have a wide range of stuffs (well its been around for ages now) you could use such as:
 
 Preventing the use of RWX when the payload gets executed, have obfuscate and cleanup, have a smart inject and many more. TLDR CS profile have a configuration for stage, post exploitation, process injection, and etc. [CS profile](https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/topics/malleable-c2_main.htm)
 
@@ -84,7 +84,7 @@ If you want to know more about the profile you can check out these blogs from Wh
 * https://whiteknightlabs.com/2023/05/23/unleashing-the-unseen-harnessing-the-power-of-cobalt-strike-profiles-for-edr-evasion/
 * https://whiteknightlabs.com/2025/05/19/harnessing-the-power-of-cobalt-strike-profiles-for-edr-evasion-part-2/
 
-So for now we will start first, by using the havoc profile generator to get a base profile and then moving forward we will be editing the parts of it. [Havoc profile generator](https://github.com/Ghost53574/havoc_profile_generator)
+So for now we will start first, by using the havoc profile generator to get a base profile and then moving forward we will be modifying the parts. [Havoc profile generator](https://github.com/Ghost53574/havoc_profile_generator)
 
 ```bash
 git clone https://github.com/Ghost53574/havoc_profile_generator
@@ -136,24 +136,24 @@ You can use the same command as below or use your own preffered command. This wi
 python3 havoc_profile_generator.py -E -S 192.168.56.101 -o test.profile
 ```
 
-after generating the profile rerun the server and connect to it. The code snippet below shows how to start the teamserver with the newly generated profile
+after generating the profile rerun the server and connect to it. The code snippet below shows how to start the teamserver with the newly generated profile.
 
 ```bash
 havoc server --profile profiles/test.profile --debug
 ```
 ![alt text](img/image3.png)
 
-For the meantime generate a payload and ensure that everything works fine. If you receive an error **"[-] Injection Spawn64 is undefined"** ensure that the profile demon block have an injection point or you can add the spawn path when you generate the payload
+For the meantime, generate a payload and ensure that everything works fine. If you receive an error **"[-] Injection Spawn64 is undefined"**, ensure that the profile demon block have an injection point or you can add the spawn path when you generate the payload.
 
-demon block, note that you must specify which process you need to inject into, inorder to blend into the network. As for example if you choose notepad and calc as injection **are these processes should be making a HTTP/HTTPS request ?**, if not choose a proper process that makes a HTTP/HTTPS request such as edge, chrome or other processes.
+Demon block. You must specify which process you need to inject into, inorder to blend into the network. As for example if you choose notepad and calc as injection **are these processes should be making a HTTP/HTTPS request ?**, if not choose a proper process that makes a HTTP/HTTPS request such as edge, chrome or other processes.
 
 ## Demon block
 
 ### Injection
 
-As shown for the code block below, I used werfault. It makes HTTP/HTTPS requests to Microsoft for error reporting. [werfault microsoft](https://learn.microsoft.com/en-us/answers/questions/2790832/how-to-repair-c-windowssystem32werfault-exe).
+As shown for the code block below, I used werfault.exe for injection. It makes HTTP/HTTPS requests to Microsoft for error reporting. [werfault microsoft](https://learn.microsoft.com/en-us/answers/questions/2790832/how-to-repair-c-windowssystem32werfault-exe).
 
-The spawn is used for post exploitation modules and injects into either x64 or x86 architecture.
+The spawn / injection block is used for post exploitation modules and injects into either x64 or x86 architecture.
 
 ```bash
 Demon {
@@ -167,7 +167,7 @@ Demon {
 }
 ```
 
-Generate a test payload and ensure that it compiles the exe.
+Generate a test payload and ensure that it compiles the payload.
 
 ![alt text](img/image4.png)
 
