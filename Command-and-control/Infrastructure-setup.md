@@ -1,6 +1,14 @@
 ## under development
 [back to blog](../blog.md)
 
+Disclaimer: This blog is for educational purposes only. The author does not condone or support illegal activity, use the information responsibly and only in environments you own or have explicit written permission to test. 
+
+All examples shown here are drawn from the author’s self-study for red-teaming certifications and from technical blogs; environments demonstrated are owned by the author and hosted in virtual machines locally. The author accepts no responsibility or liability for any actions taken by readers that violate applicable laws, regulations, or terms of service.
+
+The main purpose of this blog is to share knowledge about Havoc C2 and it's setup.
+
+![image from reddit](image.png)
+
 * Infrastructure setup
   * VPN config
   * [Redirector](redirector.md)

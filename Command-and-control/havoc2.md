@@ -1,7 +1,13 @@
 ## under development
 [back to blog](../blog.md)
 
+Disclaimer: This blog is for educational purposes only. The author does not condone or support illegal activity, use the information responsibly and only in environments you own or have explicit written permission to test. 
 
+All examples shown here are drawn from the author’s self-study for red-teaming certifications and from technical blogs; environments demonstrated are owned by the author and hosted in virtual machines locally. The author accepts no responsibility or liability for any actions taken by readers that violate applicable laws, regulations, or terms of service.
+
+The main purpose of this blog is to share knowledge about Havoc C2 and it's setup.
+
+![image from reddit](image.png)
 
 The post will focus on Havoc C2.
 
@@ -142,6 +148,9 @@ after generating the profile rerun the server and connect to it. The code snippe
 ```bash
 havoc server --profile profiles/test.profile --debug
 ```
+
+As observe it generates a random user, password and C2 port, you can also specify the name of the profile. You can see I also have multiple profiles which I used in CTF specially in pro labs. Once you fully understand how the C2 works and have enough BOF to finish the labs while using the C2. I highly suggest to do a pro labs in hackthebox (cybernetics and APTLabs).
+
 ![alt text](img/image3.png)
 
 For the meantime, generate a payload and ensure that everything works fine. If you receive an error **"[-] Injection Spawn64 is undefined"**, ensure that the profile demon block have an injection point or you can add the spawn path when you generate the payload.
@@ -152,7 +161,7 @@ Demon block. You must specify which process you need to inject into, inorder to 
 
 ### Injection
 
-As shown for the code block below, I used werfault.exe for injection. It makes HTTP/HTTPS requests to Microsoft for error reporting. [werfault microsoft](https://learn.microsoft.com/en-us/answers/questions/2790832/how-to-repair-c-windowssystem32werfault-exe).
+As shown in the code block below, I used werfault.exe for injection. It makes HTTP/HTTPS requests to Microsoft for error reporting. [werfault microsoft](https://learn.microsoft.com/en-us/answers/questions/2790832/how-to-repair-c-windowssystem32werfault-exe).
 
 The spawn / injection block is used for post exploitation modules and injects into either x64 or x86 architecture.
 
