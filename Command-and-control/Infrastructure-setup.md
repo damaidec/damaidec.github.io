@@ -13,6 +13,7 @@ The main purpose of this blog is to share knowledge about Havoc C2 and it's setu
   * VPN config
   * [Redirector](redirector.md)
   * Beacon/agent profile config
+  * FW rule
 
 
 The blog contains setup that will utilize the services of
