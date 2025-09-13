@@ -2,8 +2,20 @@
 [back to blog](../blog.md)
 
 * Infrastructure setup
-  * VPN
+  * VPN config
   * [Redirector](redirector.md)
+  * Beacon/agent profile config
+
+
+The blog contains setup that will utilize the services of
+
+* Cloudflare - to buy domain and get a certificate (if you want to test purely locally you must have a lot of VM opened/computer and have a powerdns)
+* VPS for HTTP/HTTPS redirector
+* 1 more Redirector - still checking if AWS, DO or azure serverless. 
+* Another VPS but an OpenVPN for C2 server and client.
+* 1 VM with C2 server hosted locally (should be isolated)
+* 1 VM for C2 operator
+* 1 Target machine hosted locally but ideally it would be great if it's on a different computer with VM, or AWS / azure windows VM (but the thing about those 2 you need to get a permission if you will test something related to that)
 
 ![https://tenor.com/view/silksong-hollow-knight-hollow-night-silksong-faridulasimanet-sherma-silksong-gif-171830693794769624](../images/silksong-hollow-knight.gif)
 

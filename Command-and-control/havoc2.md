@@ -282,7 +282,7 @@ Listeners { #listeners block
 }
 ```
 
-if you are receiving invalid host header make sure to check the header hosts.
+if you are receiving invalid host header make sure to check the host header and add the appropriate value or remove it for the meantime.
 
 ### HTTP/HTTPS block
 
@@ -297,7 +297,7 @@ if you are receiving invalid host header make sure to check the header hosts.
 
 There are a lot more and I will highly suggest to check out the documentation. [Havoc profile](https://havocframework.com/docs/profiles).
 
-As shown from the screenshot below
+As shown from the screenshot below, I can see it makes a post request on /owa/ and it adds the cookie value, useragent and other parameters it had on the profile. It also shows the response with data of what command was executed but it's encrypted.
 
 ![alt text](img/image6.png)
 
@@ -359,7 +359,7 @@ openssl req -new -x509 -key havoc.key -out havoc.crt -days 365 -subj "/CN=localh
 
 ```
 
-Inside the HTTP block add the following below Cert block
+Inside the HTTP block of https add the following below **Cert block**
 
 ```bash
 Cert {
@@ -368,7 +368,12 @@ Cert {
         }
 ```
 
-Next generate a payload and ensure that it works
+Next generate a payload and ensure that it works. After receiving a callback I opened wireshark and checks the traffic it can be seen that the traffic is encrypted.
+
+![alt text](img/image7.png)
+
+For the next blog it will be about infrastructure setup.
+[Go to Next](infrastructure-setup.md)
 
 
 

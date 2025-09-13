@@ -6,6 +6,7 @@
 
 ### Command and Control 
 * [havoc c2](Command-and-control/havoc2.md)
+* [Infrastructure setup](Command-and-control/Infrastructure-setup.md)
 * [Redirector](Command-and-control/redirector.md)
 
 ![https://tenor.com/view/silksong-hollow-knight-hollow-night-silksong-faridulasimanet-sherma-silksong-gif-171830693794769624](images/silksong-hollow-knight.gif)
