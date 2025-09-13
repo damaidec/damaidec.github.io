@@ -26,7 +26,7 @@ The post will focus on Havoc C2.
   * [Teamserver block](#teamserver-block)
   * [Operators block](#operators-block)
 * [SSL for beacon](#generating-ssl-for-agentimplant)
-* [Interacting with beacon/agent](Interacting-with-agent.md)
+* [Interacting with havoc](Interacting-with-havoc.md)
 * [Beacon Object Files](../BOF/intro.md)
 * [Infra setup](Infrastructure-setup.md)
 
@@ -386,9 +386,7 @@ Next generate a payload and ensure that it works. After receiving a callback I o
 
 Next post is interacting with the agent. I’m still learning, so some OPSEC trade-offs or imperfect practices may appear.
 
-[Go to Next](Interacting-with-agent.md)
-
-
+[Go to Next](Interacting-with-havoc.md)
 
 ![https://tenor.com/view/silksong-hollow-knight-hollow-night-silksong-faridulasimanet-sherma-silksong-gif-171830693794769624](../images/silksong-hollow-knight.gif)
 

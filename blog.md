@@ -6,7 +6,7 @@
 
 ### Command and Control 
 * [havoc c2](Command-and-control/havoc2.md)
-* [Interacting with agent](Command-and-control/Interacting-with-agent.md)
+* [Interacting with agent](Command-and-control/Interacting-with-havoc.md)
 * [Infrastructure setup](Command-and-control/Infrastructure-setup.md)
 * [Redirector](Command-and-control/redirector.md)
 
