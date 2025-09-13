@@ -27,7 +27,7 @@ The blog contains setup that will use the following.
 * VPS for HTTP/HTTPS redirector
 * 1 more Redirector - still checking if AWS, DO or azure serverless. 
 * VPS for OpenVPN to connect the C2 server and operator access.
-* 1 VM C2 server hosted locally (should be isolated).
+* 1 VM C2 server hosted locally.
 * 1 VM for C2 operator.
 * 1 Target machine hosted locally, ideally on a separate physical machine or a cloud VM (AWS/Azure). Note that testing on cloud VMs may require prior permission see AWS penetration testing guidelines for details: [AWS pentest guidelines](https://aws.amazon.com/security/penetration-testing/) check the simulated events.
 
