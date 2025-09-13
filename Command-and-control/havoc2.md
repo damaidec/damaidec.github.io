@@ -7,9 +7,10 @@ All examples shown here are drawn from the author’s self-study for red-teaming
 
 The main purpose of this blog is to share knowledge about Havoc C2 and it's setup.
 
+Just a random picture I found on the internet related to ina's stream on hollow knight silksong. Not related to blog lol, I just feel like I want to add it here.
 ![image from reddit](image.png)
 
-The post will focus on Havoc C2.
+The post will focus on Havoc C2. 
 
 * [Getting started](#havoc-installation)
   * [Teamserver](#team-server)
@@ -361,6 +362,8 @@ Operators {
 
 ## Generating SSL for beacon
 
+To generate an SSL for havoc you can use openssl command below. 
+
 ```bash
 openssl genpkey -algorithm RSA -out havoc.key -pkeyopt rsa_keygen_bits:2048
 
@@ -368,20 +371,21 @@ openssl req -new -x509 -key havoc.key -out havoc.crt -days 365 -subj "/CN=localh
 
 ```
 
-Inside the HTTP block of https add the following below **Cert block**
+Inside the HTTP block of https profile add the following Cert block
 
 ```bash
 Cert {
-            Cert = "/home/kali/c2/Havoc/profiles/havoc.crt"
-            Key = "/home/kali/c2/Havoc/profiles/havoc.key"
+            Cert = "/home/kali/c2/Havoc/profiles/havoc.crt" #path file to CRT
+            Key = "/home/kali/c2/Havoc/profiles/havoc.key" # path file to private key
         }
 ```
 
-Next generate a payload and ensure that it works. After receiving a callback I opened wireshark and checks the traffic it can be seen that the traffic is encrypted.
+Next generate a payload and ensure that it works. After receiving a callback I opened wireshark and checks the traffic. It can be seen that the traffic is encrypted.
 
 ![alt text](img/image7.png)
 
-For the next blog it will be about infrastructure setup.
+The next post will cover infrastructure setup. I’m still learning, so some OPSEC trade-offs or imperfect practices may appear.
+
 [Go to Next](infrastructure-setup.md)
 
 
