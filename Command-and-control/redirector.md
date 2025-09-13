@@ -9,5 +9,10 @@ The main purpose of this blog is to share knowledge about Havoc C2 and it's setu
 
 ![alt text](../images/hollow-knight-mine.gif)
 
+* HTTP/HTTPS redirector
+* serverless redirector
+* redirector rules
+
+
 ![https://tenor.com/view/silksong-hollow-knight-hollow-night-silksong-faridulasimanet-sherma-silksong-gif-171830693794769624](../images/silksong-hollow-knight.gif)
 [back to blog](../blog.md)
