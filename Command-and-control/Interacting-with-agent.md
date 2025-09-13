@@ -1,7 +1,4 @@
-## under development
 [back to blog](../blog.md)
-
-![alt text](../images/hollow-knight-mine.gif)
 
 * [Interacting with agent](#interacting-with-agent)
   * [Process list](#process-list)
@@ -98,7 +95,7 @@ Session view change how the agent view you could make it a graphical or table vi
 
 ![alt text](img/image-11.png)
 
-Another thing to note here if the computer or ID name is in red color it means you have a high privilege user. It could be an admin or NT service.
+Another thing to note here if the computer or ID name is in red color it means you have a high privilege user. It could be an admin or NT service that you could use to elevate into NT authority.
 
 ![alt text](img/image-16.png)
 
@@ -124,9 +121,9 @@ I discussed a few of them on previous blog when we are configuring the profile. 
 
 ![alt text](img/image-14.png)
 
-* Indirect syscalls - Indirectly call the native windows api such as NtAllocateVirtualMemory by routing the call through another layer rather than calling the API symbol directly. This can mean using techniques such as calling through a function pointer or trampoline(JMP) [Indirect syscalls](https://redops.at/en/blog/direct-syscalls-vs-indirect-syscalls), [idirect syscalls2](https://www.crow.rip/nest/mal/dev/inject/syscalls/indirect-syscalls)
+* Indirect syscalls - Indirectly call the native windows api such as NtAllocateVirtualMemory by routing the call through another layer rather than calling the API symbol directly. This can mean using techniques such as calling through a function pointer or trampoline(JMP) [Indirect syscalls](https://redops.at/en/blog/direct-syscalls-vs-indirect-syscalls), [indirect syscalls2](https://www.crow.rip/nest/mal/dev/inject/syscalls/indirect-syscalls)
 * Stack duplication - Used for avoiding detection during sleep [Stack duplication](https://catdev.io/blog/post-1/)
-* Amsi/ETW patch - bypass the in-process telemetry/monitoring such as Windows AMSI (Antimalware Scan Interface) or ETW (Event Tracing for Windows) so that malicious payloads avoid detection or logging.
+* Amsi/ETW patch - bypass the in-process telemetry/monitoring such as Windows AMSI (Antimalware Scan Interface) and ETW (Event Tracing for Windows) so that malicious payloads avoid detection or logging.
 * Native syscall - Use NTApis instead of the regular winAPIs for example (Virtualalloc -> NtAllocateVirtualMemory)
 
 You can also choose whether to use x64 or x86, and choose the format it could be DLL, shellcode or service exe.
@@ -135,7 +132,13 @@ The Windows service exe is used for exploiting/abusing services for privesc and 
 
 ## Extensions
 
-Too lazy to modify my network (I am using host only adapter) to make it fetch for extension but what was listed there could be found here [havoc store](#https://p4p1.github.io/havoc-store/). This extension allows you to install BOF, or other functionalites like mitre4havoc. Basically it extends the capability of havoc.
+Too lazy to modify my network to make it fetch for extension (I am using host only adapter so it doesnt have internet) but what was listed there could be found here [havoc store](#https://p4p1.github.io/havoc-store/)
+
+Just feel like adding it here even thou I have internet lol
+
+![wifi no game no life](img/Wifi%20GIF.gif)
+
+Note that you need internet to install. This extension allows you to install BOF, or other functionalites like mitre4havoc. Basically it extends the capability of havoc.
 
 ![alt text](img/image-13.png)
 
