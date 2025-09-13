@@ -13,6 +13,7 @@ The main purpose of this blog is to share knowledge about Havoc C2 and it's setu
 * serverless redirector
 * redirector rules
 
+I’m still learning, so some OPSEC trade-offs or imperfect practices may appear.
 
 ![https://tenor.com/view/silksong-hollow-knight-hollow-night-silksong-faridulasimanet-sherma-silksong-gif-171830693794769624](../images/silksong-hollow-knight.gif)
 [back to blog](../blog.md)
