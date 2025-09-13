@@ -10,9 +10,18 @@
 * [Infrastructure setup](Command-and-control/Infrastructure-setup.md)
 * [Redirector](Command-and-control/redirector.md)
 
-![https://tenor.com/view/silksong-hollow-knight-hollow-night-silksong-faridulasimanet-sherma-silksong-gif-171830693794769624](images/silksong-hollow-knight.gif)
-
 ### Evading AV
+
+* Basics
+* Loader
+* Staged loader
+
+### Testing on a home lab environment
+
+* Lab configuration
+* Walktrough
+
+![https://tenor.com/view/silksong-hollow-knight-hollow-night-silksong-faridulasimanet-sherma-silksong-gif-171830693794769624](images/silksong-hollow-knight.gif)
 
 ### Evading EDR
 
