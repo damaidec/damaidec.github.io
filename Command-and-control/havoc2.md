@@ -19,6 +19,7 @@ The post will focus on Havoc C2.
     * [SMB block](#smb-block)
   * [Teamserver block](#teamserver-block)
   * [Operators block](#operators-block)
+* [SSL for beacon](#generating-ssl-for-agentimplant)
 * [Beacon Object Files](../BOF/intro.md)
 * [Infra setup](Infrastructure-setup.md)
 
@@ -171,24 +172,23 @@ Generate a test payload and ensure that it compiles the payload.
 
 ![alt text](img/image4.png)
 
-For the next example I will be using dll payload, because for some reason the generated exe does not contains demon.x64.exe when you run strings on that. 
+For the next example I will be using dll payload, because for some reason the generated exe does not contains demon.x64.exe when you run strings on it. 
 
 ### Replace strings
 
-As shown from the screenshot below when you run strings on demon.x64.dll it will show the following.
+As shown from the screenshot below when you run strings on demon.x64.dll it will show the following at the end.
 
 * demon.x64.dll
 * Dllmain
 * Start
 
-This payload could be easily detected by an AV and blue teamers when they check the strings. Another thing to note here to fully evade the static detection of the AV you must also modify the source code of how it generates the payload.
-
 ![alt text](img/image5.png)
 
-To remove the strings you can use the following on the profile. The ReplaceStrings-x64 could be use to replace strings into something or just make it blank. The blog from WKL https://whiteknightlabs.com/2023/05/23/unleashing-the-unseen-harnessing-the-power-of-cobalt-strike-profiles-for-edr-evasion/ shows a handful of **strrep** that we could use. We can copy a few of them in our profile and convert it into ReplaceStrings-x64.
+This payload can be easily detected by AV/EDR and blue-team analysts when they inspect strings or perform static analysis. To add a bit of evasion you can remove some strings it generated when you run a command or when you generated a payload. To fully evade static signature you must also modify the source code.
 
-Below is just an example of replacing strings and if you want to add more feel free to do, I suggest that add everything that could give some detection.
+To remove the strings you can use the following on the profile. The **ReplaceStrings-x64 could be use to replace strings** into something or just make it blank. The blog from WKL https://whiteknightlabs.com/2023/05/23/unleashing-the-unseen-harnessing-the-power-of-cobalt-strike-profiles-for-edr-evasion/ shows a handful of **strrep** that we could use. We can copy a few of them in our profile and convert it into ReplaceStrings-x64.
 
+Below is just an example of replacing strings and if you want to add more feel free to do, I suggest that you add everything that could give some detection.
 
 
 ```bash
@@ -218,11 +218,11 @@ Injection {
     }
 ```
 
-Save the new profile and rerun the server. Generate the payload and run strings again, we can see that theres a difference and it removes what we want to. I highly suggest to add more replace strings similar on the blog of whiteknightlabs to have more a bit of stealthiness. 
+Save the new profile and restart the server. Generate the payload and run strings again, you should see a difference and that it removed the targeted strings to replace. I highly recommend adding more replacestrings, similar to WhiteKnight Labs’ blog, to add a little bit of stealth.
 
 ![alt text](img/image2.png)
 
-Generate a new payload, execute it on a windows test server and ensure that it still works whenever you do something in the profile.
+Another thing to do when you edit the profile or change something in the source code, is to always generate a new payload, execute it on a windows test server and ensure that it still works.
 
 ### sleep and jitter
 If you have notice we have sleep and jitter on the profile when we generate it. [havoc profile documentation](https://havocframework.com/docs/profiles)
@@ -233,9 +233,9 @@ If you have notice we have sleep and jitter on the profile when we generate it. 
 | Jitter | A randomization percentage applied to the sleep interval, to avoid predictable agent/implant patterns. When the sleep is set to 60 and the jitter to 20, the actual check in interval will randomly vary between 48 and 72 seconds (20%), making it harder for defenders to fingerprint fixed agent/implant intervals.
 
 
-## Listeners block
+## Listener block
 
-The generated profile, gives the Listener block below. There's a lot of parameters here but generally some of it are self explanatory. Another thing that I will highly suggest is to change the values of the headers like the cookies, response and etc. As it may be signatured and could be easily detected. It's ideally good to always create your own.
+The generated profile, gives the Listener block below. There's a lot of parameters here but generally some of it are self explanatory. Another thing that I will highly suggest is to change the values of the headers like the cookies, response and etc. As it may been signatured and could be easily detected. It's ideally good to always create your own or replicate an actualy request/response.
 
 ```bash
 Listeners { #listeners block
@@ -250,7 +250,7 @@ Listeners { #listeners block
         Secure       =  false
         UserAgent    = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
         Uris         =  ["/owa/", "/OWA/"]
-        Headers      =  ["Host: www.outlook.live.com", "Accept: */*", "Cookie: MicrosoftApplicationsTelemetryDeviceId=95c18d8-4dce9854;ClientId=1C0F6C5D910F9;MSPAuth=3EkAjDKjI;xid=730bf7;wla42=ZG0yMzA2KjEs"]
+        Headers      =  ["Accept: */*", "Cookie: MicrosoftApplicationsTelemetryDeviceId=95c18d8-4dce9854;ClientId=1C0F6C5D910F9;MSPAuth=3EkAjDKjI;xid=730bf7;wla42=ZG0yMzA2KjEs"]
 
         Response { # response of the server
             Headers  = ["Cache-Control: no-cache", "Pragma: no-cache", "Content-Type: text/html; charset=utf-8", "Server: Microsoft-IIS/10.0", "request-id: 6cfcf35d-0680-4853-98c4-b16723708fc9", "X-CalculatedBETarget: BY2PR06MB549.namprd06.prod.outlook.com", "X-Content-Type-Options: nosniff", "X-OWA-Version: 15.1.1240.20", "X-OWA-OWSVersion: V2017_06_15", "X-OWA-MinimumSupportedOWSVersion: V2_6", "X-Frame-Options: SAMEORIGIN", "X-DiagInfo: BY2PR06MB549", "X-UA-Compatible: IE=EmulateIE7", "X-Powered-By: ASP.NET", "X-FEServer: CY4PR02CA0010", "Connection: close"]
@@ -263,12 +263,12 @@ Listeners { #listeners block
         WorkingHours = "0:00-23:59"
         Hosts        =  ["192.168.56.101"]
         HostBind     = "0.0.0.0"
-        HostRotation = "round-robin"
+        HostRotation = "round-robin" #rotates on the listed host
         PortBind     =  443 # port
         Secure       =  true # Will use SSL
         UserAgent    = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36" # Useragent used in the HTTP request
         Uris         =  ["/owa/", "/OWA/"] # url path
-        Headers      =  ["Host: www.outlook.live.com", "Accept: */*", "Cookie: MicrosoftApplicationsTelemetryDeviceId=95c18d8-4dce9854;ClientId=1C0F6C5D910F9;MSPAuth=3EkAjDKjI;xid=730bf7;wla42=ZG0yMzA2KjEs"] # headers of the request
+        Headers      =  ["Accept: */*", "Cookie: MicrosoftApplicationsTelemetryDeviceId=95c18d8-4dce9854;ClientId=1C0F6C5D910F9;MSPAuth=3EkAjDKjI;xid=730bf7;wla42=ZG0yMzA2KjEs"] # headers of the request
 
         Response {
             Headers  = ["Cache-Control: no-cache", "Pragma: no-cache", "Content-Type: text/html; charset=utf-8", "Server: Microsoft-IIS/10.0", "request-id: 6cfcf35d-0680-4853-98c4-b16723708fc9", "X-CalculatedBETarget: BY2PR06MB549.namprd06.prod.outlook.com", "X-Content-Type-Options: nosniff", "X-OWA-Version: 15.1.1240.20", "X-OWA-OWSVersion: V2017_06_15", "X-OWA-MinimumSupportedOWSVersion: V2_6", "X-Frame-Options: SAMEORIGIN", "X-DiagInfo: BY2PR06MB549", "X-UA-Compatible: IE=EmulateIE7", "X-Powered-By: ASP.NET", "X-FEServer: CY4PR02CA0010", "Connection: close"] # response of the server when it's successful.
@@ -282,25 +282,31 @@ Listeners { #listeners block
 }
 ```
 
+if you are receiving invalid host header make sure to check the header hosts.
+
 ### HTTP/HTTPS block
 
 * Name - the listener name
-* Killdate - if it reach the kill date the agent/demon will terminate itself if it's running.
-* Hosts - where the agent will connect to just think of it as a netcat listener, you can also add a domain and port
-* Host rotation - cycle through hosts sequentially.
-* Secure - will be https and have a cert/tls. Later on we will generate our own SSL cert since this will be needed for the redirector.
-* User-agent / headers / Uris - These 3 are important and self explanatory but the main purpose of these 3 are they used to blend into the network traffic and also used for callback. Lets say for example if the headers or Useragent does not match you wont be able to get a callback. You can also use a special header with a value or a special value in a header, this can be utilize for the redirector inorder for them to know that this specific callback is coming from our C2 and not from a bot.
-* Cert - You can specify your own SSL configuration, later I will do a walktrough for it.
-* Response - if the agent made a successful callback it will show a specific HTTP response you like.
+* Killdate - if it reach the kill date the agent/implant will terminate itself if it's running.
+* Hosts - where the agent will connect to. Just think of it as a netcat listener, you can also add a domain and port
+* Host rotation - cycle through hosts sequentially (round robin). If it's random it will pick a random host listed.
+* Secure - will be https and have a cert/tls/ssl. Later on we will generate our own SSL cert since this will be needed for the http/https redirector.
+* User-agent / headers / Uris - These 3 are important and self explanatory but the main purpose of these 3 are, they used to blend into the network traffic and also used for callback. Lets say for example if the headers or User-agent does not match you wont be able to get a callback. You can also use a special header with a value or a special value in a header, this can be utilize for the redirector inorder for them to know that this specific callback/traffic is coming from the C2 implant/agent and not from a bot.
+* Cert - You can specify your own SSL configuration, later I will do a walktrough for it. [SSL for agent](#generating-ssl-for-agentimplant)
+* Response - if the agent made a successful callback it will show a specific HTTP response you specified.
 
 There are a lot more and I will highly suggest to check out the documentation. [Havoc profile](https://havocframework.com/docs/profiles).
+
+As shown from the screenshot below
+
+![alt text](img/image6.png)
 
 ### SMB block
 
 * name - the smb listener name.
-* Pipename - the SMB pipename it will connects to. Ideally you should change the pipename into a smb looking pipe to blend into the network.
+* Pipename - the SMB pipename, where it will connects to. Ideally you should change the pipename into a smb looking pipe to blend into the network.
 
-To create a pivot connection you could do `pivot connect <host> <pipe>`. I will be showing an example on how to perform a lateral movement via havoc.
+To create a pivot connection you could do `pivot connect <host> <pipe>`. I will be showing an example on how to perform a lateral movement via havoc on another blog.
 
 ```bash
 Smb {
@@ -311,7 +317,7 @@ Smb {
 
 ## Teamserver block
 
-The teamserver block is pretty much self explanatory here is where the teamserver starts and listen and it's highly recommended to use different port and start the server locally. The build block is used for compiling C and assembly payload. 
+The teamserver block is pretty much self explanatory here is where the teamserver starts and listen and it's highly recommended to use different port and start the server locally. The build block is used for compiling the C and assembly payload. 
 
 ```bash
 #teamserver config where it runs
@@ -329,7 +335,7 @@ Teamserver {
 
 ## Operators block
 
-The operator block is where you specify the authentication to teamserver for each operator. As usualy the password should be strong as well.
+The operator block is where you specify the authentication to teamserver for each operator. As usual the password should be strong.
 
 ```bash
 #users
@@ -343,6 +349,28 @@ Operators {
     }
 }
 ```
+
+## Generating SSL for beacon
+
+```bash
+openssl genpkey -algorithm RSA -out havoc.key -pkeyopt rsa_keygen_bits:2048
+
+openssl req -new -x509 -key havoc.key -out havoc.crt -days 365 -subj "/CN=localhost"
+
+```
+
+Inside the HTTP block add the following below Cert block
+
+```bash
+Cert {
+            Cert = "/home/kali/c2/Havoc/profiles/havoc.crt"
+            Key = "/home/kali/c2/Havoc/profiles/havoc.key"
+        }
+```
+
+Next generate a payload and ensure that it works
+
+
 
 ![https://tenor.com/view/silksong-hollow-knight-hollow-night-silksong-faridulasimanet-sherma-silksong-gif-171830693794769624](../images/silksong-hollow-knight.gif)
 
