@@ -7,7 +7,7 @@ All examples shown here are drawn from the author’s self-study for red-teaming
 
 The main purpose of this blog is to share knowledge about Havoc C2 and it's setup.
 
-![image from reddit](image.png)
+![alt text](../images/hollow-knight-mine.gif)
 
 ![https://tenor.com/view/silksong-hollow-knight-hollow-night-silksong-faridulasimanet-sherma-silksong-gif-171830693794769624](../images/silksong-hollow-knight.gif)
 [back to blog](../blog.md)
