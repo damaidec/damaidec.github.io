@@ -1,4 +1,3 @@
-## under development
 [back to blog](../blog.md)
 
 Disclaimer: This blog is for educational purposes only. The author does not condone or support illegal activity, use the information responsibly and only in environments you own or have explicit written permission to test. 
