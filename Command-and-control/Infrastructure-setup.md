@@ -510,6 +510,8 @@ However as shown from the screenshot above we can see that the beacon is not res
 
 Go to VPN settings > routing > **disable should client internet traffic be routed through the VPN?**. As of now I cant find a workaround to have this enabled and make the redirector connected as well. For the meantime disable it.
 
+I am thinking of doing split tunnel but, I cant find it on openvpn.
+
 ![alt text](img2/image-33.png)
 
 Then try to get another beacon and make sure it connects on the redirector and everthing works fine.
