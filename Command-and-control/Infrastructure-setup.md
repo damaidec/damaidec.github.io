@@ -17,7 +17,7 @@ The main purpose of this blog is to share knowledge about Havoc C2 and it's setu
     * [Redirector setup](#redirector-setup)
     * [Testing the redirector](#testing-the-redirector)
     * [Redirection rules and hardening](#redirection-rules-and-hardening)
-  * [OpenVPN](#OpenVPN)
+  * [OpenVPN](#openvpn)
     * [OpenVPN configuration](#openvpn-config)
     * [Testing connectivity](#testing-connectivty)
 * [FW rule](#fw-rule)
