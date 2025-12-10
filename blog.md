@@ -33,7 +33,9 @@
 
 ### Certification reviews
 
-* [Certified Evasion Techniques Professional CETP](CETP-Altered-security/CETP-review.md)
+* [Certified Evasion Techniques Professional - CETP](CETP-Altered-security/CETP-review.md)
+
+<br>
 
 sauce ruri dragon
 ![alt text](image.png)
