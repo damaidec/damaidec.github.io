@@ -31,5 +31,9 @@
 
 ### Android pentesting notes
 
+### Certification reviews
+
+* [Certified Evasion Techniques Professional CETP](CETP-Altered-security/CETP-review.md)
+
 sauce ruri dragon
 ![alt text](image.png)
