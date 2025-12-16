@@ -15,6 +15,7 @@ See my blog below, just created this for my notes, planning to move also my othe
 
 ## Certification
 
+* **Certified Evasion Techniques Professional (CETP)**
 * **Zero-Point Security Ltd Certified Red Team Operator (CRTO)**
 * **Hacktricks Training GCP Red Team Apprentice (GRTA)**
 * **Offensive Security Certified Professional (OSCP)**
@@ -30,7 +31,7 @@ See my blog below, just created this for my notes, planning to move also my othe
 * Hackthebox Pro Labs Offshore Penetration Tester Level 3
 
 ### todo
-* Certified Evasion Techniques Professional (CETP) 
+
 * Offensive Development Practitioner Certification (ODPC)
 * Advanced Red Team Operations Certification (ARTOC)
 * Red Team Ops II (CRTO2)
@@ -51,3 +52,9 @@ See my blog below, just created this for my notes, planning to move also my othe
 - https://bugcrowd.com/0xdmd
 - https://medium.com/@damaidec
 
+
+adding inaaaaaaaaaa
+
+sauce: https://www.youtube.com/watch?v=sKNI9C-yWvQ
+
+![inaaaa](images/ina.png)
