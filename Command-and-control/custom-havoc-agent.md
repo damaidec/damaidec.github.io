@@ -926,7 +926,7 @@ Next step is to fix the command issue, and the agent registration/connectivity
 
 Running the executable, it stops after the command dispatcher, its connected however its not getting any further
 
-```C
+```py
 TRANSMITTED PACKAGE!
 Data: [4] [ ec 63 c7 24 ]
 Agent => 24c763ec : 24c763ec
@@ -936,7 +936,7 @@ Command Dispatcher..
 
 On the def response of agent.py, you can add print to show what was the command being issued. This show clearly that there is something wrong after its connecting, or after its connected. Also the 256 is in decimal however this is readable and no need to convert to hexadecimal.
 
-```C
+```py
 print(f"Command issued: {Command}")
 
 The result is
@@ -948,7 +948,7 @@ Command issued: 256
 
 After debugging the issue was in the sleep in the Command.c, wherein it sleeps for a long time, which is why its just simply in idle. To fix this just remove the * 1000. Since on the Configh .h its already in milleseconds
 
-```C
+```c
 Sleep( Instance.Config.Sleeping * 1000 );
 ```
 
@@ -968,7 +968,7 @@ Testing it again. It's now working and command not found is not showing up
 
 ![alt text](img4/image-10.png)
 
-```C
+```c
 #include <Mana.h>
 
 #include <Command.h>
@@ -1080,7 +1080,7 @@ Cleanup:
 
 ## Core.c
 
-```C
+```c
 #include <Mana.h>
 
 #include <Core.h>
@@ -1155,7 +1155,7 @@ ULONG RandomNumber32( VOID )
 
 This C code is very much self explanatory, it just perform an infinite while loop to check if session is connected and if it's connected it initialize the transportinit and executes command dispacther.
 
-```C
+```c
 ManaInit();
     do
     {
