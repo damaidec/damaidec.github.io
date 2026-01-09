@@ -9,6 +9,8 @@
 * [Interacting with agent](Command-and-control/Interacting-with-havoc.md)
 * [Infrastructure setup](Command-and-control/Infrastructure-setup.md)
 * [Serverless Redirector](Command-and-control/redirector.md)
+* [Havoc Custom C2 agent](Command-and-control/custom-havoc-agent.md)
+* [Extending Custom C2 agent](Command-and-control/Extending-mana-agent.md)
 
 ### Evading AV
 
