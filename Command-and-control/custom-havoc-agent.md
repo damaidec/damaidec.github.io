@@ -2,6 +2,8 @@
 
 Since theres no too much information or guide about creating a havoc agent I decided to create one. This blog will focus on creating a custom agent for havoc.
 
+source code: https://github.com/damaidec/Mana-agent
+
 * [Havoc custom C2 agent](#havoc-custom-c2-agent)
 * [Setup](#setup)
 * [Custom Agent](#custom-agent)
