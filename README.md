@@ -15,6 +15,7 @@ See my blog below, just created this for my notes, planning to move also my othe
 
 ## Certification
 
+* **Certified Red Team Lead (CRTL)**
 * **Certified Evasion Techniques Professional (CETP)**
 * **Zero-Point Security Ltd Certified Red Team Operator (CRTO)**
 * **Hacktricks Training GCP Red Team Apprentice (GRTA)**
@@ -22,6 +23,8 @@ See my blog below, just created this for my notes, planning to move also my othe
 * **Certified Azure Web Application Security Professional (CAWASP)**
 * **Certified Red Team Professional (CRTP)**
 * **Certified Appsec Practitioner (CAP)**
+* **Certified Red Teamer Extream (CRTeamerX)**
+* **Certified Red Teamer (CRTeamer)**
 * **Fortinet Certified Fundamentals in Cybersecurity**
 * **Microsoft Technology Associate: Database Administration Fundamentals (MTA)**
 
@@ -34,8 +37,6 @@ See my blog below, just created this for my notes, planning to move also my othe
 
 * Offensive Development Practitioner Certification (ODPC)
 * Advanced Red Team Operations Certification (ARTOC)
-* Red Team Ops II (CRTO2)
-* Certified Red Teamer (CRTeamer)
 * Prolabs APTSlabs and cybernetics
 
 ## CVE
